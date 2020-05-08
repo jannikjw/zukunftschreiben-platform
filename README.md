@@ -9,4 +9,4 @@ which ongoing projects can be displayed, so that people willing to support
 A stretch goal is to allow people to directly donate on the page.
 
 This Project is being developed as part of the Web Development Elective at the 
-Center for Digital Technology and Management (CDTM)
+Center for Digital Technology and Management (CDTM).
