@@ -1,10 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 
 import { history } from './helpers';
 import { authActions } from './store/actions';
-
 
 import { PrivateRoute } from './components/PrivateRoute';
 
@@ -17,61 +16,65 @@ import { LogoutPage } from './views/LogoutPage';
 import { ProfilePage } from './views/ProfilePage';
 import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
+import { CreateProjectPage } from './views/CreateProjectPage';
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        const { dispatch, user } = this.props;
+    const { dispatch, user } = this.props;
 
-        // On initial page load we don't know whether the JWT stores
-        // in the localStorage of the browser is still valid. 
-        // To test the JWT, we try to get the current user. 
-        //     -> If this fails, it will automatically remove the user and reload the page.
-        //     -> If it succeeds, we will can unlock the application
-        if (user) {
-            dispatch(authActions.getUser())
-        }
-
+    // On initial page load we don't know whether the JWT stores
+    // in the localStorage of the browser is still valid. 
+    // To test the JWT, we try to get the current user. 
+    //     -> If this fails, it will automatically remove the user and reload the page.
+    //     -> If it succeeds, we will can unlock the application
+    if (user) {
+      dispatch(authActions.getUser())
     }
 
-    shouldShowApplication() {
-        const { initialLoadHappened, user } = this.props;
-        return !user || initialLoadHappened;
-    }
+  }
 
-    render() {
-        return (
-            <div className="container">
-                <Router history={history}>
-                    {this.shouldShowApplication() &&
-                        <div>
-                            <Route exact path="/" component={HomePage} />
+  shouldShowApplication() {
+    const { initialLoadHappened, user } = this.props;
+    return !user || initialLoadHappened;
+  }
 
-                            <Route path="/register" component={RegisterPage} />
-                            <Route path="/verify" component={VerifyPage} />
-                            <Route path="/request-code" component={RequestVerificationCodePage} />
-                            <Route path="/login" component={LoginPage} />
-                            <Route path="/logout" component={LogoutPage} />
-                            <Route path="/forgot-password" component={ForgotPasswordPage} />
-                            <Route path="/reset-password" component={ResetPasswordPage} />
+  render() {
+    return (
+      <div className="container">
+        <Router history={history}>
+          <Switch>
+            {this.shouldShowApplication() &&
+              <div>
+                <Route exact path="/" component={HomePage} />
 
-                            <PrivateRoute path="/profile" component={ProfilePage} />
+                <Route path="/register" component={RegisterPage} />
+                <Route path="/verify" component={VerifyPage} />
+                <Route path="/request-code" component={RequestVerificationCodePage} />
+                <Route path="/login" component={LoginPage} />
+                <Route path="/logout" component={LogoutPage} />
+                <Route path="/forgot-password" component={ForgotPasswordPage} />
+                <Route path="/reset-password" component={ResetPasswordPage} />
+                <Route path="/projects/create" component={CreateProjectPage} />
 
-                        </div>
-                    }
-                </Router>
-            </div>
-        );
-    }
+                <PrivateRoute path="/profile" component={ProfilePage} />
+
+              </div>
+            }
+          </Switch>
+        </Router>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    const { user, initialLoadHappened } = state.login;
-    return {
-        user,
-        initialLoadHappened
-    };
+  const { user, initialLoadHappened } = state.login;
+  return {
+    user,
+    initialLoadHappened
+  };
 }
 
 const connectedApp = connect(mapStateToProps)(App);
