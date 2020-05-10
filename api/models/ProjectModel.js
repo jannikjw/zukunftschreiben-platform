@@ -11,7 +11,7 @@ const ProjectSchema = new Schema(
     endDate: { type: Date, required: true },
     author: { type: String, required: true },
     username: { type: String, required: true },
-    likes: { type: [String], required: true },
+    likes: { type: Number, required: true, default: 0 },
     comments: { type: [String], required: false }
   },
   {

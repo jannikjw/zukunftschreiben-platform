@@ -32,8 +32,8 @@ exports.createProject = [
         description: req.body.description,
         category: req.body.category,
         status: req.body.status,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
         author: req.user._id,
         username: req.user.username,
       });
