@@ -19,14 +19,14 @@ class ProjectsPage extends Component {
 
   getProjects() {
     //gets Array of all posts
-    // const endpoint = API_URL + "/posts"; // 'api/posts
+    const endpoint = API_URL + "/posts"; // 'api/posts
 
-    // fetch(endpoint)
-    //   .then((response) => response.json())
-    //   .then((data) => this.setState({ posts: data }))
-    //   .catch((error) => {
-    //     console.error('Fetch Error :-S', error)
-    //   });
+    fetch(endpoint)
+      .then((response) => response.json())
+      .then((data) => this.setState({ posts: data }))
+      .catch((error) => {
+        console.error('Fetch Error :-S', error)
+      });
 
     const projects = [
       {

@@ -1,11 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 
 
 import { history } from './helpers';
 import { authActions } from './store/actions';
-
 
 import { PrivateRoute } from './components/PrivateRoute';
 
@@ -19,6 +18,7 @@ import { ProfilePage } from './views/ProfilePage';
 import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
 import { ProjectsPage } from './views/ProjectsPage';
+import { CreateProjectPage } from './views/CreateProjectPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -46,23 +46,27 @@ class App extends React.Component {
     return (
       <div className="container">
         <Router history={history}>
-          {this.shouldShowApplication() &&
-            <div>
-              <Route exact path="/" component={HomePage} />
-              <Route exact path="/projects" component={ProjectsPage} />
+          <Switch>
+            {this.shouldShowApplication() &&
+              <div>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/projects" component={ProjectsPage} />
 
-              <Route path="/register" component={RegisterPage} />
-              <Route path="/verify" component={VerifyPage} />
-              <Route path="/request-code" component={RequestVerificationCodePage} />
-              <Route path="/login" component={LoginPage} />
-              <Route path="/logout" component={LogoutPage} />
-              <Route path="/forgot-password" component={ForgotPasswordPage} />
-              <Route path="/reset-password" component={ResetPasswordPage} />
+                <Route path="/register" component={RegisterPage} />
+                <Route path="/verify" component={VerifyPage} />
+                <Route path="/request-code" component={RequestVerificationCodePage} />
+                <Route path="/login" component={LoginPage} />
+                <Route path="/logout" component={LogoutPage} />
+                <Route path="/forgot-password" component={ForgotPasswordPage} />
+                <Route path="/reset-password" component={ResetPasswordPage} />
+                <PrivateRoute path="/profile" component={ProfilePage} />
+                <PrivateRoute path="/create-project" component={CreateProjectPage} />
 
-              <PrivateRoute path="/profile" component={ProfilePage} />
+                <PrivateRoute path="/profile" component={ProfilePage} />
 
-            </div>
-          }
+              </div>
+            }
+          </Switch>
         </Router>
       </div>
     );
