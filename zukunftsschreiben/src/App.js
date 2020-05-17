@@ -17,61 +17,63 @@ import { LogoutPage } from './views/LogoutPage';
 import { ProfilePage } from './views/ProfilePage';
 import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
+import { ProjectsPage } from './views/ProjectsPage';
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        const { dispatch, user } = this.props;
+    const { dispatch, user } = this.props;
 
-        // On initial page load we don't know whether the JWT stores
-        // in the localStorage of the browser is still valid. 
-        // To test the JWT, we try to get the current user. 
-        //     -> If this fails, it will automatically remove the user and reload the page.
-        //     -> If it succeeds, we will can unlock the application
-        if (user) {
-            dispatch(authActions.getUser())
-        }
-
+    // On initial page load we don't know whether the JWT stores
+    // in the localStorage of the browser is still valid. 
+    // To test the JWT, we try to get the current user. 
+    //     -> If this fails, it will automatically remove the user and reload the page.
+    //     -> If it succeeds, we will can unlock the application
+    if (user) {
+      dispatch(authActions.getUser())
     }
 
-    shouldShowApplication() {
-        const { initialLoadHappened, user } = this.props;
-        return !user || initialLoadHappened;
-    }
+  }
 
-    render() {
-        return (
-            <div className="container">
-                <Router history={history}>
-                    {this.shouldShowApplication() &&
-                        <div>
-                            <Route exact path="/" component={HomePage} />
+  shouldShowApplication() {
+    const { initialLoadHappened, user } = this.props;
+    return !user || initialLoadHappened;
+  }
 
-                            <Route path="/register" component={RegisterPage} />
-                            <Route path="/verify" component={VerifyPage} />
-                            <Route path="/request-code" component={RequestVerificationCodePage} />
-                            <Route path="/login" component={LoginPage} />
-                            <Route path="/logout" component={LogoutPage} />
-                            <Route path="/forgot-password" component={ForgotPasswordPage} />
-                            <Route path="/reset-password" component={ResetPasswordPage} />
+  render() {
+    return (
+      <div className="container">
+        <Router history={history}>
+          {this.shouldShowApplication() &&
+            <div>
+              <Route exact path="/" component={HomePage} />
+              <Route exact path="/projects" component={ProjectsPage} />
 
-                            <PrivateRoute path="/profile" component={ProfilePage} />
+              <Route path="/register" component={RegisterPage} />
+              <Route path="/verify" component={VerifyPage} />
+              <Route path="/request-code" component={RequestVerificationCodePage} />
+              <Route path="/login" component={LoginPage} />
+              <Route path="/logout" component={LogoutPage} />
+              <Route path="/forgot-password" component={ForgotPasswordPage} />
+              <Route path="/reset-password" component={ResetPasswordPage} />
 
-                        </div>
-                    }
-                </Router>
+              <PrivateRoute path="/profile" component={ProfilePage} />
+
             </div>
-        );
-    }
+          }
+        </Router>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    const { user, initialLoadHappened } = state.login;
-    return {
-        user,
-        initialLoadHappened
-    };
+  const { user, initialLoadHappened } = state.login;
+  return {
+    user,
+    initialLoadHappened
+  };
 }
 
 const connectedApp = connect(mapStateToProps)(App);
