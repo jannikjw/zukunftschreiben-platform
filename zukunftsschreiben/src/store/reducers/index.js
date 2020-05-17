@@ -7,7 +7,7 @@ import { login } from './login.reducer';
 import { updatePassword } from './updatepassword.reducer';
 import { forgotPassword } from './forgotPassword.reducer';
 import { resetPassword } from './resetPassword.reducer';
-import { manageProjects } from './project.reducer';
+import { project } from './project.reducer';
 
 const rootReducer = combineReducers({
   register,
@@ -17,7 +17,7 @@ const rootReducer = combineReducers({
   updatePassword,
   forgotPassword,
   resetPassword,
-  manageProjects
+  project,
 });
 
 export default rootReducer;

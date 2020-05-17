@@ -1,20 +1,31 @@
-import { projectConstants } from '../constants/project.constants';
+import { projectConstants } from '../constants';
 
-const initialState = {
-  items: [],
-  item: {}
-}
+const initialState = { creating: false, errors: {}, project: null };
 
-export function manageProjects(state = initialState, action) {
+export function project(state = initialState, action) {
   switch (action.type) {
-    case projectConstants.FETCH_PROJECTS:
-      return;
-    case projectConstants.NEW_PROJECT:
+    case projectConstants.CREATE_REQUEST_INITIATED:
       return {
-        ...state,
-        item: action.payload
-      }
+        ...state, ...{
+          creating: true
+        }
+      };
+    case projectConstants.CREATE_REQUEST_SUCCEEDED:
+      return {
+        ...state, ...{
+          creating: false,
+          project: action.project,
+          errors: {}
+        }
+      };
+    case projectConstants.CREATE_REQUEST_FAILED:
+      return {
+        ...state, ...{
+          creating: false,
+          errors: action.error
+        }
+      };
     default:
-      return state;
+      return state
   }
 }
