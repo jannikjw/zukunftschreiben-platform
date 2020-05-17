@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Project } from "./Project"
+import { Grid, Segment } from 'semantic-ui-react'
 
 const API_URL = process.env.REACT_APP_API_HOST + "/api";
 
@@ -77,17 +78,25 @@ class ProjectsPage extends Component {
 
     return (
       <>
-        <div>ProjectsPage</div>
-        <div>{projects.map((project, index) =>
-          <Project
-            key={project._id}
-            project={project}
-            index={index}
-          />)}
-        </div>
+        <h1>ProjectsPage</h1>
+        <Grid stackable columns={2}>
+          {projects.map((project, index) =>
+            <Grid.Column>
+              <Segment>
+                <Project
+                  key={project._id}
+                  project={project}
+                  index={index}
+                />
+              </Segment>
+            </Grid.Column>)
+          }
+        </Grid>
       </>
     )
   }
 }
+
+
 
 export { ProjectsPage }
