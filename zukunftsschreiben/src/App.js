@@ -17,6 +17,7 @@ import { LogoutPage } from './views/LogoutPage';
 import { ProfilePage } from './views/ProfilePage';
 import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
+import { CreateProjectPage } from './views/CreateProjectPage';
 
 class App extends React.Component {
     constructor(props) {
@@ -57,6 +58,7 @@ class App extends React.Component {
                             <Route path="/reset-password" component={ResetPasswordPage} />
 
                             <PrivateRoute path="/profile" component={ProfilePage} />
+                            <PrivateRoute path="/create-project" component={CreateProjectPage} />
 
                         </div>
                     }
