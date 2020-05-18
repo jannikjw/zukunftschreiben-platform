@@ -1,14 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import {  Form, 
           Checkbox, 
-          Header, 
+          Image, 
           Button, 
           Dropdown,
          } from 'semantic-ui-react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { InputFile } from 'semantic-ui-react-input-file'
 
 import { projectActions } from '../../store/actions';
 import { projectConstants } from '../../store/constants';
@@ -18,9 +18,13 @@ import './CreateProjectPage.scss';
 class CreateProjectPage extends React.Component {
   constructor(props) {
     super(props);
-  
+    
     this.handleChange = this.handleChange.bind(this);
+    this.handleDropdownChange = this.handleDropdownChange.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.fileInputRef = this.fileInputRef;
 
     this.state = {
       title: "",
@@ -31,7 +35,7 @@ class CreateProjectPage extends React.Component {
       endDate: new Date(),
       likes: 0,
       submitted: false,
-      picture: null,
+      image: null,
       categoryOptions: [
         { key: 'School', text: 'School', value: 'School'},
         { key: 'Reading', text: 'Reading', value: 'Reading'},
@@ -42,12 +46,40 @@ class CreateProjectPage extends React.Component {
 
   fileInputRef = React.createRef();
 
-  handleChange = field => (event, { value }) => {
-    this.setState({[field]: value})
- }
+
+  handleChange(e) {
+    console.log(e.target)
+    console.log(e.target.name)
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  }
+
+  handleDropdownChange(e) {
+    console.log(e.target)
+  }
+
+  handleFileChange = event => {
+    this.setState({
+      image: event.target.files[0]
+    })
+  }
+
+  handleStartDateChange(date){
+    this.setState({
+      startDate: date
+    })
+  }
+
+  handleEndDateChange(date){
+      this.setState({
+        endDate: date
+      })
+  }
 
   handleSubmit(e) {
     e.preventDefault();
+
+    console.log(this.state)
 
     this.setState({ submitted: true });
     const { title, description, category, status, startDate, endDate } = this.state;
@@ -174,63 +206,86 @@ class CreateProjectPage extends React.Component {
 
   render() {
     const { creating, errors } = this.props;
-    const { title, description, category, status, startDate, endDate, submitted, categoryOptions} = this.state;
+    const { title, description, category, status, startDate, endDate, submitted, categoryOptions, image} = this.state;
 
     return (
-      <Form>
-        <Form.Input fluid label='Title' placeholder='Title' />
-        <Form.Input fluid label='Description' placeholder='Description' />
-        <Dropdown 
-          fluid 
-          search
-          selection
-          allowAdditions
-          name="category"
-          label='Category' 
-          value={category}
-          onChange={this.handleChange}
-          options={categoryOptions}
-          placeholder='Category' />
-        <Form.Group widths='equal'>
-          <Form.Field fluid>
-            <Header>Start Date</Header>
-            <DatePicker 
-              label="startDate"
-              name="startDate"
-              selected={startDate}
-              onChange={this.handleChange}  
+      <div className='view-create-project-page'>
+        <Form>
+          <Form.Input 
+            fluid 
+            label='Title' 
+            placeholder='Title' 
+            onChange={this.handleChange} 
+            value={title}
+            name='title'
             />
-          </Form.Field>
-          <Form.Field fluid>
-            <Header>End Date</Header>
-            <DatePicker  
-              name="endDate"
-              selected={endDate}
-              onChange={this.handleChange}
+          <Form.Input 
+            fluid 
+            label='Description' 
+            placeholder='Description' 
+            onChange={this.handleChange}
+            value={description}
+            name='description'
             />
+          <Form.Field fluid>
+            <label>Category</label>
+            <Dropdown 
+            fluid 
+            search
+            selection
+            allowAdditions
+            name="category" 
+            value={category}
+            onChange={this.handleDropdownChange}
+            options={categoryOptions}
+            placeholder='Category' />
           </Form.Field>
-        </Form.Group>
-        <Form.Field>
-          <Header>Picture</Header>
-          <Button
-            content="Choose Picture"
-            labelPosition="left"
-            icon="file"
-            onClick={() => this.fileInputRef.current.click()}
-          />
-          <input
-            ref={this.fileInputRef}
-            type="file"
-            hidden
-            onChange={this.fileChange}
-          />
-        </Form.Field>
-        <Form.Field>
-          <Header>Hide</Header>
-          <Checkbox toggle defaultChecked/>
-        </Form.Field>
-        <Button type="submit">Create Project</Button>
-      </Form>
+          <Form.Group widths='equal'>
+            <Form.Field fluid>
+              <label>Start Date</label>
+              <DatePicker 
+                name="startDate"
+                selected={startDate}
+                onChange={this.handleStartDateChange}
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Field>
+            <Form.Field fluid>
+              <label>End Date</label>
+              <DatePicker  
+                name="endDate"
+                selected={endDate}
+                onChange={this.handleEndDateChange}
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Field>
+          </Form.Group>
+          <Form.Group widths='equal'>
+            <Form.Field>
+              <label>Picture</label>
+              <Button
+                content="Choose Picture"
+                labelPosition="left"
+                icon="file"
+                onClick={() => this.fileInputRef.current.click()}
+              />
+              <input
+                ref={this.fileInputRef}
+                type="file"
+                hidden
+                onChange={this.handleFileChange}
+              />
+              <Image src={ image || `https://www.suedtirolerland.it/images/cms/754x435/B_RS254145_7947-kalterer-see-kalterersee-ab-klughammer.JPG` } />
+            </Form.Field>
+            <Form.Field>
+              <label>Hide</label>
+              <Checkbox toggle defaultChecked/>
+            </Form.Field>
+          </Form.Group>
+          <Button type="submit" onClick={this.handleSubmit}>Create Project</Button>
+        </Form>
+      </div>
+      
       // <div className="view-create-project-page">
       //   <h2>Create</h2>
       //   <div className="tagline">Create a new project.</div>
