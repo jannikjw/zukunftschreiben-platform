@@ -206,7 +206,11 @@ class CreateProjectPage extends React.Component {
 
   render() {
     const { creating, errors } = this.props;
+<<<<<<< HEAD
     const { title, description, category, status, startDate, endDate, submitted, categoryOptions, image} = this.state;
+=======
+    const { title, description, category, status, startDate, endDate, submitted } = this.state;
+>>>>>>> Add edit project page
 
     return (
       <div className='view-create-project-page'>
