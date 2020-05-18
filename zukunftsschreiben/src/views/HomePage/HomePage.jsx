@@ -22,6 +22,10 @@ class HomePage extends React.Component {
                         Or logout by browsing to
                         <Link to="/logout"> /logout</Link>
                     </p>
+                    <p>
+                        Create a new Project
+                        <Link to="/create-project"> /create-project</Link>
+                    </p>
                 </div>
             </div>
         );
