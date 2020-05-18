@@ -4,6 +4,7 @@ const API_URL = process.env.REACT_APP_API_HOST + '/api'
 
 export const projectService = {
   create,
+  getAll
 };
 
 // -----------------
@@ -25,8 +26,6 @@ function handleResponse(response) {
 
       const error = data
       return Promise.reject(error);
-    } else {
-      window.location = '/'
     }
     return data;
   });
@@ -46,3 +45,12 @@ function create(title, description, category, status, startDate, endDate) {
     .then(handleResponse);
 }
 
+function getAll() {
+  //gets Array of all projects
+  const requestOptions = {
+    method: 'GET',
+    headers: authHeader()
+  };
+  return fetch(`${API_URL}/project/`, requestOptions)
+    .then(handleResponse);
+}

@@ -52,3 +52,23 @@ exports.createProject = [
     }
   },
 ];
+
+
+/**
+ * Get all projects.
+ *
+ * @return {Object}}
+ */
+exports.getAll = [
+  authenticationOptional,
+  rejectRequestsWithValidationErrors,
+  (req, res) => {
+    try {
+      ProjectModel.find()
+        .sort({ createdAt: -1 })
+        .then(projects => res.json(projects))
+    } catch (err) {
+      return apiResponse.ErrorResponse(res, err);
+    }
+  },
+];

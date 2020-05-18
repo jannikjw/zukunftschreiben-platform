@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import qs from "qs";
 
 import { projectActions } from '../../store/actions';
 import { projectConstants } from '../../store/constants';
@@ -12,20 +11,16 @@ class CreateProjectPage extends React.Component {
   constructor(props) {
     super(props);
 
-    const query = qs.parse(this.props.location.search, {
-      ignoreQueryPrefix: true,
-    });
-
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      title: query.title || "",
-      description: query.description || "",
-      category: query.category || "",
-      status: query.status || "hidden",
-      startDate: query.startDate || new Date(),
-      endDate: query.endDate || new Date(),
+      title: "",
+      description: "",
+      category: "",
+      status: "hidden",
+      startDate: new Date(),
+      endDate: new Date(),
       likes: 0,
       submitted: false,
       statusList: ['hidden', 'visible'],
@@ -164,7 +159,7 @@ class CreateProjectPage extends React.Component {
   }
 
   render() {
-    const { creating: creating, errors } = this.props;
+    const { creating, errors } = this.props;
     const { title, description, category, status, startDate, endDate, submitted } = this.state;
 
     return (

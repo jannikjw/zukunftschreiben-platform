@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Router, Route, Switch } from 'react-router-dom';
 
+
 import { history } from './helpers';
 import { authActions } from './store/actions';
 
@@ -16,6 +17,7 @@ import { LogoutPage } from './views/LogoutPage';
 import { ProfilePage } from './views/ProfilePage';
 import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
+import { ProjectsPage } from './views/ProjectsPage';
 import { CreateProjectPage } from './views/CreateProjectPage';
 
 class App extends React.Component {
@@ -48,6 +50,7 @@ class App extends React.Component {
             {this.shouldShowApplication() &&
               <div>
                 <Route exact path="/" component={HomePage} />
+                <Route exact path="/projects" component={ProjectsPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />
