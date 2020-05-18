@@ -6,30 +6,48 @@ import qs from "qs";
 import { projectActions } from '../../store/actions';
 import { projectConstants } from '../../store/constants';
 
-import './CreateProjectPage.scss';
+import './EditProjectPage.scss';
 
-class CreateProjectPage extends React.Component {
+class EditProjectPage extends React.Component {
   constructor(props) {
     super(props);
 
     const query = qs.parse(this.props.location.search, {
       ignoreQueryPrefix: true,
     });
-
+    console.log(query.id)
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      title: query.title || "",
-      description: query.description || "",
-      category: query.category || "",
-      status: query.status || "hidden",
-      startDate: query.startDate || new Date(),
-      endDate: query.endDate || new Date(),
+      id: query.id ,
+      title: "",
+      description: "",
+      category: "",
+      status: "hidden",
+      startDate: new Date(),
+      endDate: new Date(),
       likes: 0,
-      submitted: false,
+      edited: false,
       statusList: ['hidden', 'visible'],
     };
+  }
+
+  componentDidMount(){
+    new Promise((resolve, reject) => {
+      this.props.dispatch(projectActions.getProject(this.state.id));
+      resolve();
+    }).then(() => {
+      this.setState({
+        title: this.props.editing_project.title,
+        description: this.props.editing_project.description,
+        category: this.props.editing_project.category,
+        status: this.props.editing_project.status,
+        startDate: new Date(this.props.editing_project.startDate),
+        endDate: new Date(this.props.editing_project.endDate),
+        likes: this.props.editing_project.likes,
+      })
+    });
   }
 
   handleChange(e) {
@@ -40,11 +58,11 @@ class CreateProjectPage extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    this.setState({ submitted: true });
+    this.setState({ edited: true });
     const { title, description, category, status, startDate, endDate } = this.state;
     const { dispatch } = this.props;
     if (this.handleLocalErrors()) {
-      dispatch(projectActions.create(title, description, category, status, startDate, endDate))
+      dispatch(projectActions.edit(title, description, category, status, startDate, endDate))
     }
   }
 
@@ -118,7 +136,7 @@ class CreateProjectPage extends React.Component {
     }
 
     if (validationErrors.length > 0) {
-      function failure(error) { return { type: projectConstants.CREATE_REQUEST_FAILED, error } }
+      function failure(error) { return { type: projectConstants.EDIT_REQUEST_FAILED, error } }
       dispatch(failure({
         status: 0,
         message: 'Local Validation Error.',
@@ -164,50 +182,50 @@ class CreateProjectPage extends React.Component {
   }
 
   render() {
-    const { creating, errors } = this.props;
-    const { title, description, category, status, startDate, endDate, submitted } = this.state;
+    const { editing, errors, getting, project,  } = this.props;
+    const { title, description, category, status, startDate, endDate, edited } = this.state;
 
     return (
-      <div className="view-create-project-page">
-        <h2>Create</h2>
-        <div className="tagline">Create a new project.</div>
+      <div className="view-edit-project-page">
+        <h2>Edit</h2>
+        <div className="tagline">Edit project.</div>
         <form name="form" onSubmit={this.handleSubmit}>
-          <div className={'form-group' + (submitted && !title ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && project && !project.title ? ' has-error' : '')}>
             <label htmlFor="title">Title</label>
             <input type="text" className="form-control" name="title" value={title} onChange={this.handleChange} />
             {
               this.errorsForField('title')
             }
           </div>
-          <div className={'form-group' + (submitted && !description ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && !description ? ' has-error' : '')}>
             <label htmlFor="description">Description</label>
             <input type="text" className="form-control" name="description" value={description} onChange={this.handleChange} />
             {
               this.errorsForField('description')
             }
           </div>
-          <div className={'form-group' + (submitted && !category ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && !category ? ' has-error' : '')}>
             <label htmlFor="category">Category</label>
             <input type="text" className="form-control" name="category" value={category} onChange={this.handleChange} />
             {
               this.errorsForField('category')
             }
           </div>
-          <div className={'form-group' + (submitted && !status ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && !status ? ' has-error' : '')}>
             <label htmlFor="status">Status</label>
             <input type="text" className="form-control" name="status" value={status} onChange={this.handleChange} />
             {
               this.errorsForField('status')
             }
           </div>
-          <div className={'form-group' + (submitted && !startDate ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && !startDate ? ' has-error' : '')}>
             <label htmlFor="startDate">Start Date</label>
             <input type="date" className="form-control" name="startDate" value={startDate} onChange={this.handleChange} />
             {
               this.errorsForField('startDate')
             }
           </div>
-          <div className={'form-group' + (submitted && this.fieldHasError('endDate') ? ' has-error' : '')}>
+          <div className={'form-group' + (edited && this.fieldHasError('endDate') ? ' has-error' : '')}>
             <label htmlFor="endDate">End Date</label>
             <input type="date" className="form-control" name="endDate" value={endDate} onChange={this.handleChange} />
             {
@@ -215,11 +233,11 @@ class CreateProjectPage extends React.Component {
             }
           </div>
           <div className="form-group">
-            {!creating &&
-              <input type="submit" className="form-control" name="login" value="Create Project" />
+            {!editing &&
+              <input type="submit" className="form-control" name="login" value="Edit Project" />
             }
-            {creating &&
-              <input type="submit" className="form-control" name="login" value="Creating Project ..." disabled />
+            {editing &&
+              <input type="submit" className="form-control" name="login" value="Editing Project ..." disabled />
             }
           </div>
         </form>
@@ -242,12 +260,14 @@ class CreateProjectPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { creating, errors } = state.project;
+  const { editing, errors, editing_project, getting,  } = state.project;
   return {
-    creating,
-    errors
+    editing,
+    errors,
+    editing_project,
+    getting
   };
 }
 
-const connectedCreateProjectPage = connect(mapStateToProps)(CreateProjectPage);
-export { connectedCreateProjectPage as CreateProjectPage }; 
+const connectedEditProjectPage = connect(mapStateToProps)(EditProjectPage);
+export { connectedEditProjectPage as EditProjectPage }; 
