@@ -42,7 +42,18 @@ function create(title, description, category, status, startDate, endDate) {
     body: JSON.stringify({ title, description, category, status, startDate, endDate })
   };
 
-  return fetch(`${API_URL}/project/`, requestOptions)
+  return fetch(`${API_URL}/project/create`, requestOptions)
+    .then(handleResponse);
+}
+
+function getProject(id) {
+  const requestOptions = {
+    method: 'GET',
+    headers: authHeader(),
+    body: JSON.stringify({ id })
+  };
+
+  return fetch(`${API_URL}/project/getProject`, requestOptions)
     .then(handleResponse);
 }
 
