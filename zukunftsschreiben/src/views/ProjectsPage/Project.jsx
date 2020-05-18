@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { Link } from 'react-router-dom';
-import { authHeader } from "../../helpers";
 import { Card, Image, Icon } from 'semantic-ui-react';
 
 class Project extends Component {
@@ -13,29 +11,25 @@ class Project extends Component {
     }
   }
 
-
-
-
   likeProject() { }
 
   render() {
-    const { title, description, likes, comments, category, startDate, endDate, image } = this.props.project
+    const { title, description, likes, category, startDate, endDate, image } = this.props.project
 
     return (
       <Card fluid>
         <Card.Content>
           <Image src={image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{title}</Card.Header>
-          <Card.Meta>Project Duration</Card.Meta>
+          <Card.Meta>Project Duration: {startDate.substring(0, 10) + "-" + endDate.substring(0, 10)}</Card.Meta>
           <Card.Description>{description}</Card.Description>
-          <Card.Description>Project Duration:</Card.Description>
           <Card.Description>Category: {category}</Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <a onClick={this.likeProject()}>
+          <button onClick={this.likeProject()}>
             <Icon name='like' />
             {likes}
-          </a>
+          </button>
         </Card.Content>
       </Card>
     )
