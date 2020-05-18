@@ -52,3 +52,20 @@ exports.createProject = [
     }
   },
 ];
+
+exports.getProject = [
+  authenticationRequired,
+  (req, res) => {
+		try {
+      const query = {_id : req.body.id};
+      ProjectModel.findOne(query, (err, Project) => {
+        if (err) { return apiResponse.ErrorResponse(res, err); }
+        else {
+          return apiResponse.successResponseWithData(res,"Account confirmed.", Project);
+        }
+      });
+    } catch (err) {
+			return apiResponse.ErrorResponse(res, err);
+    }
+  },
+];
