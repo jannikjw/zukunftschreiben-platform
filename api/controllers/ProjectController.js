@@ -1,4 +1,5 @@
 const ProjectModel = require("../models/ProjectModel");
+const UserModel = require("../models/UserModel");
 
 const { body, query, param } = require("express-validator");
 const rejectRequestsWithValidationErrors = require("../middleware/rejectRequestsWithValidationErrors");
@@ -64,12 +65,26 @@ exports.getAll = [
   rejectRequestsWithValidationErrors,
   (req, res) => {
     try {
-      ProjectModel.find()
-        .sort({ createdAt: -1 })
-        .then((projects) => {
-          let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
-          apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
-        })
+      if (req.user) {
+        const isAdmin = UserModel.findById(req.user._id)
+          .then((user) => user.isAdmin)
+          .catch(e => console.log(e))
+        if (isAdmin) {
+          ProjectModel.find()
+            .sort({ createdAt: -1 })
+            .then((projects) => {
+              let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+              apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+            })
+        }
+      } else {
+        ProjectModel.find({ status: 'shown' })
+          .sort({ createdAt: -1 })
+          .then((projects) => {
+            let projectsData = projects.map(p => p.toApiRepresentation(null));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
     } catch (err) {
       return apiResponse.ErrorResponse(res, err);
     }

@@ -61,7 +61,7 @@ function updateProject(project_id) {
     headers: authHeader(),
   };
 
-  return fetch(`${API_URL}/projects/${project_id}`, requestOptions)
+  return fetch(`${API_URL}/project/${project_id}`, requestOptions)
     .then(handleResponse)
 }
 
