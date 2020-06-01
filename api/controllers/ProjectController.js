@@ -71,7 +71,7 @@ exports.getAll = [
         .then((user) => user.isAdmin)
         .catch(e => console.log(e))
 
-      if (req.user && isAdmin) {
+      if (isAdmin) {
         ProjectModel.find()
           .sort({ createdAt: -1 })
           .then((projects) => {
