@@ -51,7 +51,7 @@ export function project(state = initialState, action) {
           initialLoadHappened: true,
           loading: false,
           errors: {},
-          projects: data,
+          projects: data.data,
         }
       };
     case projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED:

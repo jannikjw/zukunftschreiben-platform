@@ -66,8 +66,10 @@ exports.getAll = [
     try {
       ProjectModel.find()
         .sort({ createdAt: -1 })
-        .then(projects => res.json(projects))
-        .catch(e => console.log(e))
+        .then((projects) => {
+          let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+          apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+        })
     } catch (err) {
       return apiResponse.ErrorResponse(res, err);
     }
