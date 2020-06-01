@@ -37,6 +37,10 @@ ProjectSchema.method("toApiRepresentation", function (user) {
   let obj = this.toObject();
   obj.author = user._id;
   obj.username = user.username;
+  obj.likes = this.likes ? this.likes.length : 0;
+  if (this.likes && user_id) {
+    obj.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+  }
   return obj;
 });
 

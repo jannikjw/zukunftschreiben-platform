@@ -8,21 +8,11 @@ class Project extends Component {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
-
-    function isLiked(project, userID) {
-      return project.likes.includes(userID)
-    }
-
-    this.state = {
-      isLiked: isLiked(this.props.project, this.props.userID),
-      likes: this.props.project.likes.length
-    }
   }
 
   likeProject() {
     //if users are not logged in but try to vote they are redirected to login page
     const { userID, project } = this.props
-    const isLiked = this.state.isLiked
 
     // console.log("User: " + this.state.currentUser.username)
     if (!userID) {
@@ -30,14 +20,10 @@ class Project extends Component {
     } else {
 
       try {
-        if (isLiked) {
-          //Vote has been voted up yet --> unvote
+        if (project.userHasLiked) {
           this.props.dispatch(likeActions.unlikeProject())
-            .then(this.setState({ isVoted: false, likes: this.state.likes - 1 }))
         } else {
-          //Vote has been not voted up yet --> vote up
           this.props.dispatch(likeActions.likeProject())
-            .then(this.setState({ isVoted: true, likes: this.state.likes + 1 }))
         }
       } catch (err) {
         console.error(err)
@@ -46,8 +32,7 @@ class Project extends Component {
   }
 
   render() {
-    const { title, description, category, startDate, endDate, image } = this.props.project
-    const likes = this.state.likes
+    const { title, description, likes, category, startDate, endDate, image } = this.props.project
 
     return (
       <Card fluid>
