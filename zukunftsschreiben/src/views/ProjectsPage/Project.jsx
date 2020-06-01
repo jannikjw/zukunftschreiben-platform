@@ -32,13 +32,20 @@ class Project extends Component {
 
   render() {
     const { title, description, likes, category, startDate, endDate, image } = this.props.project
+    let startD = new Date(startDate)
+    let endD = new Date(endDate)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
+    const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(startD)
+    const [{ value: mo }, , { value: da }, , { value: ye }] = dateTimeFormat.formatToParts(endD)
+    startD = `${day}.${month}.${year}`
+    endD = `${da}.${mo}.${ye}`
 
     return (
       <Card fluid>
         <Card.Content>
           <Image src={image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{title}</Card.Header>
-          <Card.Meta>Project Duration: {startDate.substring(0, 10) + "-" + endDate.substring(0, 10)}</Card.Meta>
+          <Card.Meta>Project Duration: {startD + " - " + endD}</Card.Meta>
           <Card.Description>{description}</Card.Description>
           <Card.Description>Category: {category}</Card.Description>
         </Card.Content>
