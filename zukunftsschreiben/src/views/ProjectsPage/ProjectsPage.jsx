@@ -18,18 +18,18 @@ class ProjectsPage extends Component {
     if (!projects) return '';
     if (!projects.length > 0) return '';
     return projects
-      .map((project, index) => <Grid.Column><Project
-        key={project._id}
-        project={project}
-        index={index}
-        userID={user && user._id}
-      /></Grid.Column>
+      .map((project, index) => <Grid.Column key={project._id}>
+        <Project
+          key={project._id}
+          project={project}
+          index={index}
+          userID={user && user._id}
+        /></Grid.Column>
       )
   }
 
   render() {
     const { projects } = this.props
-    console.log(projects)
     return (
       <div className="view-projects-page">
         <h1>ProjectsPage</h1>

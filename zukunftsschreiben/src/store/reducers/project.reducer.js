@@ -11,6 +11,7 @@ function updateProject(projects, project) {
       return p;
     }
   })
+  return updatedProjects;
 }
 
 
@@ -58,7 +59,7 @@ export function project(state = initialState, action) {
         ...state, ...{
           initialLoadHappened: true,
           loading: false,
-          projects: updateProject(state.project, action.project)
+          projects: updateProject(state.projects, action.project)
         }
       };
     case projectConstants.UPDATE_PROJECT_REQUEST_FAILED:

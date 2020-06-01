@@ -15,8 +15,8 @@ function getOptimisticallyUpdatedProject(project, userWillHaveLiked) {
   let expectedProject = JSON.parse(JSON.stringify(project))
   expectedProject.userHasLiked = userWillHaveLiked;
   if (project.userHasLiked !== userWillHaveLiked) {
-    const exptectedLikeDelta = userWillHaveLiked ? 1 : -1;
-    expectedProject.likes = project.likes + exptectedLikeDelta;
+    const expectedLikeDelta = userWillHaveLiked ? 1 : -1;
+    expectedProject.likes = project.likes + expectedLikeDelta;
   }
   return expectedProject;
 }

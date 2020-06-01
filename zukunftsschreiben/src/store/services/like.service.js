@@ -42,7 +42,7 @@ function likeProject(project_id) {
     headers: authHeader()
   };
 
-  return fetch(`${API_URL}/projects/${project_id}/like`, requestOptions)
+  return fetch(`${API_URL}/like/${project_id}`, requestOptions)
     .then(handleResponse)
 }
 
@@ -53,6 +53,6 @@ function unlikeProject(project_id) {
     headers: authHeader()
   };
 
-  return fetch(`${API_URL}/projects/${project_id}/like`, requestOptions)
+  return fetch(`${API_URL}/like/${project_id}`, requestOptions)
     .then(handleResponse)
 }

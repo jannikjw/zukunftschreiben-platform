@@ -33,15 +33,24 @@ ProjectSchema.virtual('comments', {
 
 
 
-ProjectSchema.method("toApiRepresentation", function (user) {
-  let obj = this.toObject();
-  obj.author = user._id;
-  obj.username = user.username;
-  obj.likes = this.likes ? this.likes.length : 0;
+ProjectSchema.method("toApiRepresentation", function (user_id) {
+  apiRepresentation = {}
+
+  apiRepresentation._id = this._id;
+  apiRepresentation.author = this.author;
+  apiRepresentation.username = this.username;
+  apiRepresentation.title = this.title;
+  apiRepresentation.description = this.description;
+  apiRepresentation.category = this.category;
+  apiRepresentation.status = this.status;
+  apiRepresentation.startDate = this.startDate;
+  apiRepresentation.endDate = this.endDate;
+  apiRepresentation.likes = this.likes ? this.likes.length : 0;
+  apiRepresentation.userHasLiked = false
   if (this.likes && user_id) {
-    obj.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+    apiRepresentation.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
   }
-  return obj;
+  return apiRepresentation;
 });
 
 

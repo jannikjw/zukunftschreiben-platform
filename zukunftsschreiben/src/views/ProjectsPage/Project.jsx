@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Card, Image, Icon } from 'semantic-ui-react';
-import { projectActions } from '../../store/actions';
+import { Card, Image, Icon, Button } from 'semantic-ui-react';
 import { likeActions } from "../../store/actions/like.actions";
+import { connect } from 'react-redux';
 
 class Project extends Component {
   constructor(props) {
@@ -14,16 +14,15 @@ class Project extends Component {
     //if users are not logged in but try to vote they are redirected to login page
     const { userID, project } = this.props
 
-    // console.log("User: " + this.state.currentUser.username)
     if (!userID) {
       window.location = '/login'
     } else {
 
       try {
         if (project.userHasLiked) {
-          this.props.dispatch(likeActions.unlikeProject())
+          this.props.dispatch(likeActions.unlikeProject(project))
         } else {
-          this.props.dispatch(likeActions.likeProject())
+          this.props.dispatch(likeActions.likeProject(project))
         }
       } catch (err) {
         console.error(err)
@@ -44,14 +43,23 @@ class Project extends Component {
           <Card.Description>Category: {category}</Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <button onClick={this.likeProject()}>
+          <Button onClick={() => this.likeProject()}>
             <Icon name='like' />
             {likes}
-          </button>
+          </Button>
         </Card.Content>
       </Card>
     )
   }
 }
 
-export { Project }
+function mapStateToProps(state) {
+  const { loggedIn, user } = state.login;
+  return {
+    user,
+    loggedIn
+  };
+}
+
+const connectedProject = connect(mapStateToProps)(Project);
+export { connectedProject as Project }; 

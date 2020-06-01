@@ -45,7 +45,7 @@ exports.createLike = [
         project: req.project._id
       };
       // check whether the proejct was already liked
-      LikeModel.findOne(query)
+      LikeModel.findById(req.project._id)
         .then(existingLike => {
           if (existingLike) {
             // user has already Liked – return success

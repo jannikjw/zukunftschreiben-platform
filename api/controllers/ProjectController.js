@@ -67,6 +67,7 @@ exports.getAll = [
       ProjectModel.find()
         .sort({ createdAt: -1 })
         .then(projects => res.json(projects))
+        .catch(e => console.log(e))
     } catch (err) {
       return apiResponse.ErrorResponse(res, err);
     }
