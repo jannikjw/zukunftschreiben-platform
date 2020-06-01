@@ -72,3 +72,26 @@ exports.getAll = [
     }
   },
 ];
+
+/**
+ * Update own Project.
+ * 
+ *  @return {Project}
+ */
+exports.update = [
+  authenticationRequired,
+  rejectRequestsWithValidationErrors,
+  (req, res) => {
+    try {
+      ProjectModel.findByIdAndUpdate(req.params.project_id)
+        .then(project => {
+
+          project.save()
+            .then(() => res.json('Project updated.'))
+            .catch(err => res.status(400).json('Error: ' + err))
+        })
+    } catch (err) {
+      return apiResponse.ErrorResponse(res, err);
+    }
+  },
+];

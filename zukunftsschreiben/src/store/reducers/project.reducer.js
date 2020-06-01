@@ -2,6 +2,18 @@ import { projectConstants } from '../constants';
 
 const initialState = { creating: false, errors: {}, project: null, projects: [] };
 
+
+function updateProject(projects, project) {
+  let updatedProjects = projects.map(p => {
+    if (p._id === project._id) {
+      return project;
+    } else {
+      return p;
+    }
+  })
+}
+
+
 export function project(state = initialState, action) {
   switch (action.type) {
     case projectConstants.CREATE_PROJECT_REQUEST_INITIATED:
@@ -41,14 +53,23 @@ export function project(state = initialState, action) {
           projects: data,
         }
       };
-    case projectConstants.GET_PROJECTS_REQUEST_FAILED:
+    case projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED:
       return {
         ...state, ...{
           initialLoadHappened: true,
           loading: false,
-          errors: action.error
+          projects: updateProject(state.project, action.project)
         }
       };
+    case projectConstants.UPDATE_PROJECT_REQUEST_FAILED:
+      return {
+        ...state, ...{
+          initialLoadHappened: true,
+          loading: false,
+          errors: action.error,
+        }
+      };
+
 
     default:
       return state

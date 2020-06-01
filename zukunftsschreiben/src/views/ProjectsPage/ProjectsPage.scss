@@ -1,3 +1,7 @@
 // styling specific for the specific component
 .view-projects-page {
+  .ui.card > .content > .header:not(.ui),
+  .ui.cards > .card > .content > .header:not(.ui) {
+    margin-top: 0.2em;
+  }
 }

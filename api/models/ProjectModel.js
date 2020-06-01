@@ -11,8 +11,6 @@ const ProjectSchema = new Schema(
     endDate: { type: Date, required: true },
     author: { type: String, required: true },
     username: { type: String, required: true },
-    likes: { type: Number, required: true, default: 0 },
-    comments: { type: [String], required: false }
   },
   {
     timestamps: true,
@@ -21,6 +19,20 @@ const ProjectSchema = new Schema(
   }
 );
 
+ProjectSchema.virtual('likes', {
+  ref: 'Like',
+  localField: '_id',
+  foreignField: 'project'
+});
+
+ProjectSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'project'
+});
+
+
+
 ProjectSchema.method("toApiRepresentation", function (user) {
   let obj = this.toObject();
   obj.author = user._id;
@@ -28,8 +40,6 @@ ProjectSchema.method("toApiRepresentation", function (user) {
   return obj;
 });
 
-ProjectSchema.method("updateLastInteraction", function () {
-  return;
-});
+
 
 module.exports = mongoose.model("Project", ProjectSchema);
