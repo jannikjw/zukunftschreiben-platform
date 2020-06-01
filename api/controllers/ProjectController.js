@@ -63,25 +63,27 @@ exports.createProject = [
 exports.getAll = [
   authenticationOptional,
   rejectRequestsWithValidationErrors,
-  (req, res) => {
+  async (req, res) => {
     try {
-      if (req.user) {
-        const isAdmin = UserModel.findById(req.user._id)
-          .then((user) => user.isAdmin)
-          .catch(e => console.log(e))
-        if (isAdmin) {
-          ProjectModel.find()
-            .sort({ createdAt: -1 })
-            .then((projects) => {
-              let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
-              apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
-            })
-        }
-      } else {
+      req.user = req.user ? req.user : null
+      let isAdmin = false
+      isAdmin = await UserModel.findById(req.user._id)
+        .then((user) => user.isAdmin)
+        .catch(e => console.log(e))
+
+      if (req.user && isAdmin) {
+        ProjectModel.find()
+          .sort({ createdAt: -1 })
+          .then((projects) => {
+            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
+      else {
         ProjectModel.find({ status: 'shown' })
           .sort({ createdAt: -1 })
           .then((projects) => {
-            let projectsData = projects.map(p => p.toApiRepresentation(null));
+            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }
