@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Image, Icon, Button } from 'semantic-ui-react';
+import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
 import { likeActions } from "../../store/actions/like.actions";
 import { connect } from 'react-redux';
 
@@ -8,6 +8,9 @@ class Project extends Component {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
+    this.state = {
+      percent: 33
+    }
   }
 
   likeProject() {
@@ -28,6 +31,21 @@ class Project extends Component {
         console.error(err)
       }
     }
+  }
+
+  incrementFunding() {
+    this.setState((prevState) => ({
+      percent: prevState.percent >= 100 ? 0 : prevState.percent + 20
+    }))
+  }
+
+  renderProgress() {
+    if (this.state.percent < 40)
+      return "yellow";
+    else if (this.state.percent < 100)
+      return "olive";
+    else
+      return "green";
   }
 
   render() {
@@ -54,6 +72,10 @@ class Project extends Component {
             <Icon name='like' />
             {likes}
           </Button>
+        </Card.Content>
+        <Card.Content>
+          <Progress percent={this.state.percent} progress color={this.renderProgress()} />
+          <Button onClick={() => this.incrementFunding()}>Press X to pay respect</Button>
         </Card.Content>
       </Card>
     )
