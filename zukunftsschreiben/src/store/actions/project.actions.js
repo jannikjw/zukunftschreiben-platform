@@ -43,3 +43,4 @@ function getAll() {
   function failure(error) { return { type: projectConstants.GET_PROJECTS_REQUEST_FAILED, error } }
 
 }
+

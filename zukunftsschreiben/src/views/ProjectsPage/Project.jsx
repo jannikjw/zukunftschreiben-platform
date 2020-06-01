@@ -1,39 +1,94 @@
 import React, { Component } from "react";
-import { Card, Image, Icon } from 'semantic-ui-react';
+import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
+import { likeActions } from "../../store/actions/like.actions";
+import { connect } from 'react-redux';
 
 class Project extends Component {
   constructor(props) {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
-
     this.state = {
+      percent: 33
     }
   }
 
-  likeProject() { }
+  likeProject() {
+    //if users are not logged in but try to vote they are redirected to login page
+    const { userID, project } = this.props
+
+    if (!userID) {
+      window.location = '/login'
+    } else {
+
+      try {
+        if (project.userHasLiked) {
+          this.props.dispatch(likeActions.unlikeProject(project))
+        } else {
+          this.props.dispatch(likeActions.likeProject(project))
+        }
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+
+  incrementFunding() {
+    this.setState((prevState) => ({
+      percent: prevState.percent >= 100 ? 0 : prevState.percent + 20
+    }))
+  }
+
+  renderProgress() {
+    if (this.state.percent < 40)
+      return "yellow";
+    else if (this.state.percent < 100)
+      return "olive";
+    else
+      return "green";
+  }
 
   render() {
     const { title, description, likes, category, startDate, endDate, image } = this.props.project
+    let startD = new Date(startDate)
+    let endD = new Date(endDate)
+    const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
+    const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(startD)
+    const [{ value: mo }, , { value: da }, , { value: ye }] = dateTimeFormat.formatToParts(endD)
+    startD = `${day}.${month}.${year}`
+    endD = `${da}.${mo}.${ye}`
 
     return (
       <Card fluid>
         <Card.Content>
           <Image src={image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{title}</Card.Header>
-          <Card.Meta>Project Duration: {startDate.substring(0, 10) + "-" + endDate.substring(0, 10)}</Card.Meta>
+          <Card.Meta>Project Duration: {startD + " - " + endD}</Card.Meta>
           <Card.Description>{description}</Card.Description>
           <Card.Description>Category: {category}</Card.Description>
         </Card.Content>
         <Card.Content extra>
-          <button onClick={this.likeProject()}>
+          <Button onClick={() => this.likeProject()}>
             <Icon name='like' />
             {likes}
-          </button>
+          </Button>
+        </Card.Content>
+        <Card.Content>
+          <Progress percent={this.state.percent} progress color={this.renderProgress()} />
+          <Button onClick={() => this.incrementFunding()}>Press X to pay respect</Button>
         </Card.Content>
       </Card>
     )
   }
 }
 
-export { Project }
+function mapStateToProps(state) {
+  const { loggedIn, user } = state.login;
+  return {
+    user,
+    loggedIn
+  };
+}
+
+const connectedProject = connect(mapStateToProps)(Project);
+export { connectedProject as Project }; 

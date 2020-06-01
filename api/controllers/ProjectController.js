@@ -1,4 +1,5 @@
 const ProjectModel = require("../models/ProjectModel");
+const UserModel = require("../models/UserModel");
 
 const { body, query, param } = require("express-validator");
 const rejectRequestsWithValidationErrors = require("../middleware/rejectRequestsWithValidationErrors");
@@ -62,11 +63,53 @@ exports.createProject = [
 exports.getAll = [
   authenticationOptional,
   rejectRequestsWithValidationErrors,
+  async (req, res) => {
+    try {
+      req.user = req.user ? req.user : null
+      let isAdmin = false
+      isAdmin = await UserModel.findById(req.user._id)
+        .then((user) => user.isAdmin)
+        .catch(e => console.log(e))
+
+      if (isAdmin) {
+        ProjectModel.find()
+          .sort({ createdAt: -1 })
+          .then((projects) => {
+            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
+      else {
+        ProjectModel.find({ status: 'shown' })
+          .sort({ createdAt: -1 })
+          .then((projects) => {
+            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
+    } catch (err) {
+      return apiResponse.ErrorResponse(res, err);
+    }
+  },
+];
+
+/**
+ * Update own Project.
+ * 
+ *  @return {Project}
+ */
+exports.update = [
+  authenticationRequired,
+  rejectRequestsWithValidationErrors,
   (req, res) => {
     try {
-      ProjectModel.find()
-        .sort({ createdAt: -1 })
-        .then(projects => res.json(projects))
+      ProjectModel.findByIdAndUpdate(req.params.project_id)
+        .then(project => {
+
+          project.save()
+            .then(() => res.json('Project updated.'))
+            .catch(err => res.status(400).json('Error: ' + err))
+        })
     } catch (err) {
       return apiResponse.ErrorResponse(res, err);
     }

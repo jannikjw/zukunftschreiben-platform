@@ -2,14 +2,14 @@ import { authHeader } from '../../helpers';
 
 const API_URL = process.env.REACT_APP_API_HOST + '/api'
 
-export const projectService = {
-  create,
-  getAll
+export const likeService = {
+  likeProject,
+  unlikeProject
 };
 
 // -----------------
 // private functions
-// ----------------- 
+// -----------------
 
 // For other responses a 401 error means that the JWT is expired
 // If this is the case, delete the use and perform a hard reload the page
@@ -27,6 +27,7 @@ function handleResponse(response) {
       const error = data
       return Promise.reject(error);
     }
+
     return data;
   });
 }
@@ -34,34 +35,24 @@ function handleResponse(response) {
 // -----------------
 // service functions
 // -----------------
-function create(title, description, category, status, startDate, endDate) {
+
+function likeProject(project_id) {
   const requestOptions = {
     method: 'POST',
-    headers: authHeader(),
-    body: JSON.stringify({ title, description, category, status, startDate, endDate })
-  };
-
-  return fetch(`${API_URL}/project/`, requestOptions)
-    .then(handleResponse);
-}
-
-function getAll() {
-  //gets Array of all projects
-  const requestOptions = {
-    method: 'GET',
     headers: authHeader()
   };
-  return fetch(`${API_URL}/project/`, requestOptions)
-    .then(handleResponse);
-}
 
-function updateProject(project_id) {
-  const requestOptions = {
-    method: 'PUT',
-    headers: authHeader(),
-  };
-
-  return fetch(`${API_URL}/project/${project_id}`, requestOptions)
+  return fetch(`${API_URL}/like/${project_id}`, requestOptions)
     .then(handleResponse)
 }
 
+
+function unlikeProject(project_id) {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: authHeader()
+  };
+
+  return fetch(`${API_URL}/like/${project_id}`, requestOptions)
+    .then(handleResponse)
+}

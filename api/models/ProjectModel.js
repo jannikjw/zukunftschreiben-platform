@@ -11,8 +11,6 @@ const ProjectSchema = new Schema(
     endDate: { type: Date, required: true },
     author: { type: String, required: true },
     username: { type: String, required: true },
-    likes: { type: Number, required: true, default: 0 },
-    comments: { type: [String], required: false }
   },
   {
     timestamps: true,
@@ -21,15 +19,40 @@ const ProjectSchema = new Schema(
   }
 );
 
-ProjectSchema.method("toApiRepresentation", function (user) {
-  let obj = this.toObject();
-  obj.author = user._id;
-  obj.username = user.username;
-  return obj;
+ProjectSchema.virtual('likes', {
+  ref: 'Like',
+  localField: '_id',
+  foreignField: 'project'
 });
 
-ProjectSchema.method("updateLastInteraction", function () {
-  return;
+ProjectSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'project'
 });
+
+
+
+ProjectSchema.method("toApiRepresentation", function (user_id) {
+  apiRepresentation = {}
+
+  apiRepresentation._id = this._id;
+  apiRepresentation.author = this.author;
+  apiRepresentation.username = this.username;
+  apiRepresentation.title = this.title;
+  apiRepresentation.description = this.description;
+  apiRepresentation.category = this.category;
+  apiRepresentation.status = this.status;
+  apiRepresentation.startDate = this.startDate;
+  apiRepresentation.endDate = this.endDate;
+  apiRepresentation.likes = this.likes ? this.likes.length : 0;
+  apiRepresentation.userHasLiked = false
+  if (this.likes && user_id) {
+    apiRepresentation.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+  }
+  return apiRepresentation;
+});
+
+
 
 module.exports = mongoose.model("Project", ProjectSchema);
