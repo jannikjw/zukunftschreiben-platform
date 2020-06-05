@@ -1,23 +1,24 @@
 import React, { Component } from "react";
 import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
 import { likeActions } from "../../store/actions/like.actions";
+import { donationActions } from "../../store/actions/donation.actions";
 import { connect } from 'react-redux';
+
+const goal = 1000;
 
 class Project extends Component {
   constructor(props) {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
-    this.state = {
-      percent: 33
-    }
+    this.incrementFunding = this.incrementFunding.bind(this)
   }
 
   likeProject() {
     //if users are not logged in but try to vote they are redirected to login page
-    const { userID, project } = this.props
+    const { loggedIn, project } = this.props
 
-    if (!userID) {
+    if (!loggedIn) {
       window.location = '/login'
     } else {
 
@@ -33,23 +34,40 @@ class Project extends Component {
     }
   }
 
-  incrementFunding() {
-    this.setState((prevState) => ({
-      percent: prevState.percent >= 100 ? 0 : prevState.percent + 20
-    }))
+  incrementFunding(amount) {
+    const { loggedIn, project } = this.props
+
+    if (!loggedIn) {
+      window.location = '/login'
+    } else {
+
+      try {
+        this.props.dispatch(donationActions.donateToProject(project, amount))
+      } catch (err) {
+        console.error(err)
+      }
+    }
   }
 
   renderProgress() {
-    if (this.state.percent < 40)
+    const { funding } = this.props.project
+
+    if (funding < 40)
       return "yellow";
-    else if (this.state.percent < 100)
+    else if (funding < 100)
       return "olive";
     else
       return "green";
   }
 
+  renderLabel() {
+    const { funding } = this.props.project;
+    const percent = Math.ceil(funding / goal * 100)
+    return `${percent}% von ${goal}€ Ziel erreicht`
+  }
+
   render() {
-    const { title, description, likes, category, startDate, endDate, image } = this.props.project
+    const { title, description, likes, category, startDate, endDate, image, funding } = this.props.project
     let startD = new Date(startDate)
     let endD = new Date(endDate)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
@@ -74,8 +92,9 @@ class Project extends Component {
           </Button>
         </Card.Content>
         <Card.Content>
-          <Progress percent={this.state.percent} progress color={this.renderProgress()} />
-          <Button onClick={() => this.incrementFunding()}>Press X to pay respect</Button>
+          <h3>{Math.round(funding)}€</h3>
+          <Progress value={funding} total={goal} color={this.renderProgress()}>{this.renderLabel()}</Progress>
+          <Button onClick={() => this.incrementFunding(10.50)}>Press to pay 10.50</Button>
         </Card.Content>
       </Card>
     )
@@ -86,7 +105,7 @@ function mapStateToProps(state) {
   const { loggedIn, user } = state.login;
   return {
     user,
-    loggedIn
+    loggedIn,
   };
 }
 

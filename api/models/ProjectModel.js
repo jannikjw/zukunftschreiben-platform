@@ -11,6 +11,7 @@ const ProjectSchema = new Schema(
     endDate: { type: Date, required: true },
     author: { type: String, required: true },
     username: { type: String, required: true },
+    goal: { type: Number, required: true }
   },
   {
     timestamps: true,
@@ -58,10 +59,11 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   }
   apiRepresentation.funding = 0;
   if (this.donations) {
-    apiRepresentation.funding = this.donations
+    apiRepresentation.funding = (this.donations
       .map(d => d.amount)
-      .reduce((sum, current) => sum + current, 0)
+      .reduce((sum, current) => sum + current, 0) / 100).toFixed(2)
   }
+  apiRepresentation.goal = this.goal;
   return apiRepresentation;
 });
 

@@ -12,7 +12,7 @@ const injectProjectFromID = require("../middleware/injectProjectFromID");
 function updateProjectResponse(res, msg, project_id, user_id) {
   ProjectModel.findById(project_id)
     .populate('donations')
-    // .exec((err, project) => { if (err) console.log(err); })
+    .populate('likes')
     .then((project) => {
       if (!project) {
         return apiResponse.notFoundResponse(res, "Project not found.");
