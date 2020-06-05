@@ -31,6 +31,12 @@ ProjectSchema.virtual('comments', {
   foreignField: 'project'
 });
 
+ProjectSchema.virtual('donations', {
+  ref: 'Donation',
+  localField: '_id',
+  foreignField: 'project'
+});
+
 
 
 ProjectSchema.method("toApiRepresentation", function (user_id) {
@@ -49,6 +55,12 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   apiRepresentation.userHasLiked = false
   if (this.likes && user_id) {
     apiRepresentation.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+  }
+  apiRepresentation.funding = 0;
+  if (this.donations) {
+    apiRepresentation.funding = this.donations
+      .map(d => d.amount)
+      .reduce((sum, current) => sum + current, 0)
   }
   return apiRepresentation;
 });
