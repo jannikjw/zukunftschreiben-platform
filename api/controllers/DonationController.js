@@ -14,7 +14,6 @@ function updateProjectResponse(res, msg, project_id, user_id) {
     .populate('donations')
     // .exec((err, project) => { if (err) console.log(err); })
     .then((project) => {
-      console.log(project.toApiRepresentation(user_id))
       if (!project) {
         return apiResponse.notFoundResponse(res, "Project not found.");
       } else {

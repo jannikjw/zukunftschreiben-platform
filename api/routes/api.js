@@ -9,6 +9,6 @@ var app = express();
 app.use("/auth/", authRouter);
 app.use("/project/", projectRouter);
 app.use("/like/", likeRouter)
-app.use("/donation/", donationRouter)
+app.use("/donate/", donationRouter)
 
 module.exports = app;
