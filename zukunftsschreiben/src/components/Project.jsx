@@ -1,7 +1,8 @@
 import React, { Component } from "react";
+import { Link } from 'react-router-dom';
 import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
-import { likeActions } from "../../store/actions/like.actions";
-import { donationActions } from "../../store/actions/donation.actions";
+import { likeActions } from "../store/actions/like.actions";
+import { donationActions } from "../store/actions/donation.actions";
 import { connect } from 'react-redux';
 
 const goal = 1000;
@@ -67,7 +68,9 @@ class Project extends Component {
   }
 
   render() {
-    const { title, description, likes, category, startDate, endDate, image, funding } = this.props.project
+    const { loading, errors } = this.props;
+    const { _id, title, description, likes, category, startDate, endDate, image, funding } = this.props.project
+
     let startD = new Date(startDate)
     let endD = new Date(endDate)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
@@ -94,7 +97,9 @@ class Project extends Component {
         <Card.Content>
           <h3>{Math.round(funding)}€</h3>
           <Progress value={funding} total={goal} color={this.renderProgress()}>{this.renderLabel()}</Progress>
-          <Button onClick={() => this.incrementFunding(10.50)}>Press to pay 10.50</Button>
+          <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
+
+          <Link to={"/" + _id}><Button>More</Button></Link>
         </Card.Content>
       </Card>
     )
@@ -103,9 +108,12 @@ class Project extends Component {
 
 function mapStateToProps(state) {
   const { loggedIn, user } = state.login;
+  const { loading, errors } = state.project;
   return {
     user,
     loggedIn,
+    loading,
+    errors
   };
 }
 

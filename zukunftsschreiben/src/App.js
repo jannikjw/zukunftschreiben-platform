@@ -19,6 +19,7 @@ import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
 import { ProjectsPage } from './views/ProjectsPage';
 import { CreateProjectPage } from './views/CreateProjectPage';
+import { ProjectDetailPage } from './views/ProjectDetailPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -51,6 +52,7 @@ class App extends React.Component {
               <div>
                 <Route exact path="/" component={HomePage} />
                 <Route exact path="/projects" component={ProjectsPage} />
+                <Route exact path="/projects/:project_id" component={ProjectDetailPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />

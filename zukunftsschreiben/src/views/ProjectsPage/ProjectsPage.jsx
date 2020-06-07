@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Project } from "./Project"
+import { Project } from "../../components/Project"
 import { Grid } from 'semantic-ui-react'
 
 import { projectActions } from '../../store/actions';
