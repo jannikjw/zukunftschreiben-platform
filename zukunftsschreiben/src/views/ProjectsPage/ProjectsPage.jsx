@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Project } from "./Project"
+import { Project } from "../../components/Project"
 import { Grid } from 'semantic-ui-react'
 
 import { projectActions } from '../../store/actions';
@@ -18,12 +18,10 @@ class ProjectsPage extends Component {
     if (!projects) return '';
     if (!projects.length > 0) return '';
     return projects
-      .map((project, index) => <Grid.Column key={project._id}>
+      .map((project) => <Grid.Column key={project._id}>
         <Project
           key={project._id}
           project={project}
-          index={index}
-          userID={user && user._id}
         /></Grid.Column>
       )
   }

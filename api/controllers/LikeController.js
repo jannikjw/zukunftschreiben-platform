@@ -14,6 +14,7 @@ function updatedProjectResponse(res, msg, project_id, user_id) {
   ProjectModel.findById(project_id)
     .populate('likes')
     // .populate('comments')
+    .populate('donations')
     .then((project) => {
       if (!project) {
         return apiResponse.notFoundResponse(res, "Project not found.");
@@ -41,8 +42,8 @@ exports.createLike = [
   (req, res) => {
     try {
       const query = {
-        author: req.user._id,
-        project: req.project._id
+        author_id: req.user._id,
+        project_id: req.project._id
       };
       // check whether the proejct was already liked
       LikeModel.findById(req.project._id)

@@ -1,7 +1,7 @@
 const ProjectModel = require("../models/ProjectModel");
 const UserModel = require("../models/UserModel");
 
-const { body, query, param } = require("express-validator");
+const { body } = require("express-validator");
 const rejectRequestsWithValidationErrors = require("../middleware/rejectRequestsWithValidationErrors");
 const authenticationRequired = require("../middleware/authenticationRequired");
 const authenticationOptional = require("../middleware/authenticationOptional");
@@ -15,8 +15,12 @@ mongoose.set("useFindAndModify", false); //false to use native findOneAndUpdate(
  * Create a new Project.
  *
  * @param {string}      title
- * @param {string}      url
- *
+ * @param {string}      description
+ * @param {string}      category
+ * @param {string}      status
+ * @param {Date}      startDate
+ * @param {Date}      endDate
+ *  *
  * @return {Project}}
  */
 exports.createProject = [
@@ -65,17 +69,19 @@ exports.getAll = [
   rejectRequestsWithValidationErrors,
   async (req, res) => {
     try {
-      req.user = req.user ? req.user : null
+      const user_id = req.user ? req.user._id : null
       let isAdmin = false
-      isAdmin = await UserModel.findById(req.user._id)
-        .then((user) => user.isAdmin)
-        .catch(e => console.log(e))
+      if (user_id) {
+        isAdmin = await UserModel.findById(user_id)
+          .then((user) => user.isAdmin)
+          .catch(e => console.log(e))
+      }
 
       if (isAdmin) {
         ProjectModel.find()
           .sort({ createdAt: -1 })
           .then((projects) => {
-            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }
@@ -83,7 +89,7 @@ exports.getAll = [
         ProjectModel.find({ status: 'shown' })
           .sort({ createdAt: -1 })
           .then((projects) => {
-            let projectsData = projects.map(p => p.toApiRepresentation(req.user._id));
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }

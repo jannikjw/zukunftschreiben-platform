@@ -22,6 +22,9 @@ class HomePage extends React.Component {
           <p>
             Create a new Project <Link to="/create-project"> /create-project</Link>
           </p>
+          <p>
+            See Projects <Link to="/projects"> /projects</Link>
+          </p>
         </div>
       </div>
     );
