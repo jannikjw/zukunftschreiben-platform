@@ -81,7 +81,7 @@ exports.getAll = [
         ProjectModel.find()
           .sort({ createdAt: -1 })
           .then((projects) => {
-            let projectsData = projects.map(p => p.toApiRepresentation(user_id));
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }
@@ -89,7 +89,7 @@ exports.getAll = [
         ProjectModel.find({ status: 'shown' })
           .sort({ createdAt: -1 })
           .then((projects) => {
-            let projectsData = projects.map(p => p.toApiRepresentation(user_id));
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }

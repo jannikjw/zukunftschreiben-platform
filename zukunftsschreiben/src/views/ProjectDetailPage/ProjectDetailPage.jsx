@@ -58,7 +58,7 @@ class ProjectDetailPage extends Component {
               <input type="submit" className="form-control" name="donate" value="Donate" />
             }
             {loading &&
-              <input type="submit" className="form-control" name="donate" value="Donating disabled" />
+              <input type="submit" className="form-control" name="donate" value="Processing Donation" />
             }
           </div>
         </form>

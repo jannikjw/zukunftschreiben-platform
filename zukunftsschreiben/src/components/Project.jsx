@@ -13,6 +13,7 @@ class Project extends Component {
 
     this.likeProject = this.likeProject.bind(this)
     this.incrementFunding = this.incrementFunding.bind(this)
+
   }
 
   likeProject() {
@@ -50,29 +51,32 @@ class Project extends Component {
     }
   }
 
-  renderProgress() {
-    const { funding } = this.props.project
+  colorForProgress() {
+    const fundingLevelLowBoundary = 40;
+    const fundingLevelAchievedBoundary = 100;
+    const fundingLevelLowColor = "yellow";
+    const fundingLevelOngoingColor = "green";
+    const fundingLevelAchievedColor = "olive";
 
-    if (funding < 40)
-      return "yellow";
-    else if (funding < 100)
-      return "olive";
-    else
-      return "green";
+    const { funding, percent } = this.props.project;
+
+    if (percent < fundingLevelLowBoundary) return fundingLevelLowColor;
+    if (percent < fundingLevelAchievedBoundary) return fundingLevelOngoingColor;
+    return fundingLevelAchievedColor;
+
   }
 
-  renderLabel() {
-    const { funding } = this.props.project;
-    const percent = Math.ceil(funding / goal * 100)
+  textForLabel() {
+    const { percent, goal } = this.props.project;
     return `${percent}% von ${goal}€ Ziel erreicht`
   }
 
   render() {
     const { loading, errors } = this.props;
-    const { _id, title, description, likes, category, startDate, endDate, image, funding } = this.props.project
+    const { project } = this.props;
 
-    let startD = new Date(startDate)
-    let endD = new Date(endDate)
+    let startD = new Date(project.startDate)
+    let endD = new Date(project.endDate)
     const dateTimeFormat = new Intl.DateTimeFormat('en', { year: 'numeric', month: 'numeric', day: 'numeric' })
     const [{ value: month }, , { value: day }, , { value: year }] = dateTimeFormat.formatToParts(startD)
     const [{ value: mo }, , { value: da }, , { value: ye }] = dateTimeFormat.formatToParts(endD)
@@ -82,24 +86,24 @@ class Project extends Component {
     return (
       <Card fluid>
         <Card.Content>
-          <Image src={image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
-          <Card.Header>{title}</Card.Header>
+          <Image src={project.image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
+          <Card.Header>{project.title}</Card.Header>
           <Card.Meta>Project Duration: {startD + " - " + endD}</Card.Meta>
-          <Card.Description>{description}</Card.Description>
-          <Card.Description>Category: {category}</Card.Description>
+          <Card.Description>{project.description}</Card.Description>
+          <Card.Description>Category: {project.category}</Card.Description>
         </Card.Content>
         <Card.Content extra>
           <Button onClick={() => this.likeProject()}>
             <Icon name='like' />
-            {likes}
+            {project.likes}
           </Button>
         </Card.Content>
         <Card.Content>
-          <h3>{Math.round(funding)}€</h3>
-          <Progress value={funding} total={goal} color={this.renderProgress()}>{this.renderLabel()}</Progress>
+          <h3>{Math.round(project.funding)}€</h3>
+          <Progress value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
 
-          <Link to={"/" + _id}><Button>More</Button></Link>
+          <Link to={"/" + project._id}><Button>More</Button></Link>
         </Card.Content>
       </Card>
     )

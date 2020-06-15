@@ -17,7 +17,7 @@ function updateProjectResponse(res, msg, project_id, user_id) {
       if (!project) {
         return apiResponse.notFoundResponse(res, "Project not found.");
       } else {
-        let projectData = project.toApiRepresentation(user_id);
+        const projectData = project.toApiRepresentation(user_id);
         return apiResponse.successResponseWithData(res, msg, projectData);
       }
     })
@@ -49,13 +49,13 @@ exports.createDonation = [
   (req, res) => {
     try {
       let donation = DonationModel({
-        author: req.user._id,
-        project: req.project._id,
+        author_id: req.user._id,
+        project_id: req.project._id,
         amount: Math.round(req.body.amount * 100)
       });
       donation.save()
         .then(savedDonation => {
-          return updateProjectResponse(res, 'Donation of ' + (savedDonation.amount / 100).toFixed(2) + '€ recorded.', savedDonation.project, req.user._id)
+          return updateProjectResponse(res, 'Donation of ' + (savedDonation.amount / 100).toFixed(2) + '€ recorded.', savedDonation.project_id, req.user._id)
         })
         .catch(err => { return apiResponse.ErrorResponse(res, err) })
     } catch (err) {

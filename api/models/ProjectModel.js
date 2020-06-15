@@ -23,19 +23,19 @@ const ProjectSchema = new Schema(
 ProjectSchema.virtual('likes', {
   ref: 'Like',
   localField: '_id',
-  foreignField: 'project'
+  foreignField: 'project_id'
 });
 
 ProjectSchema.virtual('comments', {
   ref: 'Comment',
   localField: '_id',
-  foreignField: 'project'
+  foreignField: 'project_id'
 });
 
 ProjectSchema.virtual('donations', {
   ref: 'Donation',
   localField: '_id',
-  foreignField: 'project'
+  foreignField: 'project_id'
 });
 
 
@@ -64,6 +64,10 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
       .reduce((sum, current) => sum + current, 0) / 100).toFixed(2)
   }
   apiRepresentation.goal = this.goal;
+  apiRepresentation.percent = 0;
+  if (this.goal != 0) {
+    apiRepresentation.percent = Math.ceil(this.funding / this.goal * 100)
+  }
   return apiRepresentation;
 });
 

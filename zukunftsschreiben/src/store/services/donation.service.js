@@ -42,6 +42,6 @@ function donateToProject(project_id, amount) {
     body: JSON.stringify({ amount })
   };
 
-  return fetch(`${API_URL}/donate/${project_id}`, requestOptions)
+  return fetch(`${API_URL}/donation/${project_id}`, requestOptions)
     .then(handleResponse)
 }

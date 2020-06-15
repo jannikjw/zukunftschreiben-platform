@@ -42,8 +42,8 @@ exports.createLike = [
   (req, res) => {
     try {
       const query = {
-        author: req.user._id,
-        project: req.project._id
+        author_id: req.user._id,
+        project_id: req.project._id
       };
       // check whether the proejct was already liked
       LikeModel.findById(req.project._id)
