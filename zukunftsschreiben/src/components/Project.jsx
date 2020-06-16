@@ -5,8 +5,6 @@ import { likeActions } from "../store/actions/like.actions";
 import { donationActions } from "../store/actions/donation.actions";
 import { connect } from 'react-redux';
 
-const goal = 1000;
-
 class Project extends Component {
   constructor(props) {
     super(props)
@@ -58,7 +56,7 @@ class Project extends Component {
     const fundingLevelOngoingColor = "green";
     const fundingLevelAchievedColor = "olive";
 
-    const { funding, percent } = this.props.project;
+    const { percent } = this.props.project;
 
     if (percent < fundingLevelLowBoundary) return fundingLevelLowColor;
     if (percent < fundingLevelAchievedBoundary) return fundingLevelOngoingColor;
@@ -72,7 +70,6 @@ class Project extends Component {
   }
 
   render() {
-    const { loading, errors } = this.props;
     const { project } = this.props;
 
     let startD = new Date(project.startDate)

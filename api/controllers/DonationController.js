@@ -8,7 +8,6 @@ const authenticationRequired = require("../middleware/authenticationRequired");
 const injectProjectFromID = require("../middleware/injectProjectFromID");
 
 
-
 function updateProjectResponse(res, msg, project_id, user_id) {
   ProjectModel.findById(project_id)
     .populate('donations')
