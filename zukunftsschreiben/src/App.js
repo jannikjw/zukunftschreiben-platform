@@ -7,6 +7,7 @@ import { history } from './helpers';
 import { authActions } from './store/actions';
 
 import { PrivateRoute } from './components/PrivateRoute';
+import { Navbar } from './components/Navbar';
 
 import { HomePage } from './views/HomePage';
 import { RegisterPage } from './views/RegisterPage';
@@ -47,6 +48,7 @@ class App extends React.Component {
     return (
       <div className="container">
         <Router history={history}>
+          <Navbar />
           <Switch>
             {this.shouldShowApplication() &&
               <div>

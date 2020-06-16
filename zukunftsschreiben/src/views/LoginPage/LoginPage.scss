@@ -1,4 +1,21 @@
 // styling specific for the specific component
 .view-login-page {
+  .wrapper {
+    text-align: center;
+    margin: 10px;
+  }
+  .login-container {
+    padding: 10px 20px 20px 20px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #f28f1f;
+    width: 50%;
+    display: inline-block;
+    box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+    border-radius: 0.28571429rem;
+  }
 
+  hr {
+    border: 0.5px solid #f28f1f;
+  }
 }
