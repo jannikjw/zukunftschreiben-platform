@@ -13,7 +13,6 @@ mongoose.set("useFindAndModify", false);
 function updatedProjectResponse(res, msg, project_id, user_id) {
   ProjectModel.findById(project_id)
     .populate('likes')
-    // .populate('comments')
     .populate('donations')
     .then((project) => {
       if (!project) {
@@ -46,17 +45,17 @@ exports.createLike = [
         project_id: req.project._id
       };
       // check whether the proejct was already liked
-      LikeModel.findById(req.project._id)
+      LikeModel.findOne(query)
         .then(existingLike => {
           if (existingLike) {
             // user has already Liked – return success
-            return updatedProjectResponse(res, "Like recorded.", req.project._id, req.user._id);
+            return updatedProjectResponse(res, "Like recorded.", existingLike.project_id, req.user._id);
           } else {
             // else create a new like
             let like = new LikeModel(query);
             like.save()
               .then(savedLike => {
-                return updatedProjectResponse(res, "Like recorded.", savedLike.project, req.user._id);
+                return updatedProjectResponse(res, "Like recorded.", savedLike.project_id, req.user._id);
               })
               .catch(err => {
                 console.log(err)
@@ -88,20 +87,21 @@ exports.deleteLike = [
   (req, res) => {
     try {
       const query = {
-        author: req.user._id,
-        project: req.project._id
+        author_id: req.user._id,
+        project_id: req.project._id
       };
       // check whether the proejct was already liked
       LikeModel.findOne(query)
         .then(existingLike => {
           if (!existingLike) {
             // no like exists for this user and project – return success
-            return updatedProjectResponse(res, "Like deleted.", req.project._id, req.user._id);
+            return updatedProjectResponse(res, "Like deleted.", existingLike.project_id, req.user._id);
           } else {
             // else delete the like
+            console.log("here")
             existingLike.remove()
               .then(deletedLike => {
-                return updatedProjectResponse(res, "Like deleted.", req.project._id, req.user._id);
+                return updatedProjectResponse(res, "Like deleted.", deletedLike.project_id, req.user._id);
               })
               .catch(err => {
                 return apiResponse.ErrorResponse(res, err);

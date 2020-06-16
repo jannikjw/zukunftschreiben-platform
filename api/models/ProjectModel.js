@@ -55,7 +55,7 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   apiRepresentation.likes = this.likes ? this.likes.length : 0;
   apiRepresentation.userHasLiked = false
   if (this.likes && user_id) {
-    apiRepresentation.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+    apiRepresentation.userHasLiked = this.likes.find(l => l.author_id == user_id) ? true : false;
   }
   apiRepresentation.funding = 0;
   if (this.donations) {
