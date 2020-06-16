@@ -102,35 +102,25 @@ class LoginPage extends React.Component {
     return errors && errors.message && (!errors.data || !errors.data.length);
   }
 
+  onYoutubeIfr
+
   render() {
     const { loading, errors } = this.props;
     const { email, password, submitted } = this.state;
     return (
       <div className="view-login-page">
-        <iframe
-          class="elementor-background-video-embed"
-          frameborder="0" allowfullscreen="1"
-          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-          title="YouTube video player"
-          width="640"
-          height="360"
-          src="https://www.youtube.com/embed/4SmmLpabd8Y?controls=0&amp;rel=0&amp;playsinline=1&amp;enablejsapi=1&amp;origin=https%3A%2F%2Fzukunftschreiben.org&amp;widgetid=1"
-          id="widget2"
-        ></iframe>
         <div className="wrapper">
           <div className="login-container">
             <h2>Anmelden</h2>
             <form name="form" onSubmit={this.handleSubmit}>
               <div className={'form-group' + (submitted && !email ? ' has-error' : '')}>
-                <label htmlFor="email">E-Mail</label>
-                <input type="text" className="form-control" name="email" value={email} onChange={this.handleChange} />
+                <input type="text" className="form-control" name="email" placeholder="E-Mail" value={email} onChange={this.handleChange} />
                 {
                   this.errorsForField('email')
                 }
               </div>
               <div className={'form-group' + (submitted && !password ? ' has-error' : '')}>
-                <label htmlFor="password">Passwort</label>
-                <input type="password" className="form-control" name="password" value={password} onChange={this.handleChange} />
+                <input type="password" className="form-control" name="password" placeholder="Passwort" value={password} onChange={this.handleChange} />
                 {
                   this.errorsForField('password')
                 }
@@ -145,7 +135,7 @@ class LoginPage extends React.Component {
               </div>
               <div className="form-group">
                 {!loading &&
-                  <input type="submit" className="form-control" name="login" value="Login" />
+                  <input type="submit" className="form-control" name="login" value="Anmelden" />
                 }
                 {loading &&
                   <input type="submit" className="form-control" name="login" value="Anmelden..." disabled />
@@ -160,7 +150,7 @@ class LoginPage extends React.Component {
             <hr />
             <div className="link-group">
               <p>
-                <Link to="/register">Neu bei Zukunftschreiben? Jetzt Anmelden!</Link>
+                <Link to="/register">Neu bei Zukunftschreiben? Jetzt Registrieren!</Link>
               </p>
               <p>
                 {email &&

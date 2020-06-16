@@ -9,7 +9,7 @@
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background-color: $primary-color;
+    background-color: white;
 
     .left {
       display: flex;
@@ -42,12 +42,13 @@
 
     .navlink a {
       font-size: 0.8em;
-      color: white;
+      color: $strong-color;
       text-decoration: none;
     }
 
     .navlink a:hover {
       cursor: pointer;
+      color: $primary-color;
     }
 
     .navlink.logo {
