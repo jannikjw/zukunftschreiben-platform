@@ -30,12 +30,13 @@ class ProjectsPage extends Component {
     const { projects } = this.props
     return (
       <div className="view-projects-page">
-        <h1>ProjectsPage</h1>
-        {projects &&
-          <Grid stackable columns={2}>
-            {this.renderProjects()}
-          </Grid>
-        }
+        <div className="project-wrapper">
+          {projects &&
+            <Grid stackable columns={2}>
+              {this.renderProjects()}
+            </Grid>
+          }
+        </div>
       </div>
     )
   }

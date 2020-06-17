@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Icon } from 'semantic-ui-react'
 
 import './Navbar.scss';
 
@@ -32,7 +33,7 @@ class Navbar extends React.Component {
           <ul className="right">
             {loggedIn &&
               <li className="navlink">
-                <Link to="/profile">{user.username}</Link>
+                <Link to="/profile"><Icon size="big" name="user circle" />{user.username}</Link>
               </li>
             }
             {loggedIn &&
