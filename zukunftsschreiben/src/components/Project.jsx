@@ -100,7 +100,7 @@ class Project extends Component {
           <Progress value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
 
-          <Link to={"/" + project._id}><Button>More</Button></Link>
+          <Link to={"/projects/" + project._id}><Button>More</Button></Link>
         </Card.Content>
       </Card>
     )

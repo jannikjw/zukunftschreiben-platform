@@ -1,0 +1,10 @@
+// styling specific for the specific component
+@import "../resources/style/variables.scss";
+
+.payment-progress {
+  width: 100%;
+
+  .ui.steps .step.active .title {
+    color: $primary-color;
+  }
+}

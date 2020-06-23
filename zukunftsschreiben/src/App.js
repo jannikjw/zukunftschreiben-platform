@@ -65,7 +65,6 @@ class App extends React.Component {
                 <Route path="/reset-password" component={ResetPasswordPage} />
                 <PrivateRoute path="/profile" component={ProfilePage} />
                 <PrivateRoute path="/create-project" component={CreateProjectPage} />
-
                 <PrivateRoute path="/profile" component={ProfilePage} />
 
               </div>
