@@ -82,7 +82,7 @@ exports.getAll = [
         ProjectModel.find({}, null, {
           populate: ['likes', 'donations']
         })
-          .sort({ createdAt: -1 })
+          .sort({ endDate: -1 })
           .then((projects) => {
             const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
@@ -92,7 +92,7 @@ exports.getAll = [
         ProjectModel.find({ status: "shown" }, null, {
           populate: ['likes', 'donations']
         })
-          .sort({ createdAt: -1 })
+          .sort({ endDate: -1 })
           .then((projects) => {
             const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
