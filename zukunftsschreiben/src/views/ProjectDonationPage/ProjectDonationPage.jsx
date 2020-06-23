@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { donationActions } from '../../store/actions/donation.actions';
 import { projectActions } from '../../store/actions/project.actions';
 import { PaymentProgress } from '../../components/PaymentProgress';
 import { Grid, Image, Icon, Form, Radio, Button } from 'semantic-ui-react'
-import './ProjectDetailPage.scss';
+import './ProjectDonationPage.scss';
 
 
-class ProjectDetailPage extends Component {
+class ProjectDonationPage extends Component {
   constructor(props) {
     super(props);
 
@@ -15,7 +16,7 @@ class ProjectDetailPage extends Component {
 
     this.state = {
       submitted: false,
-      amount: 5,
+      amount: 0,
       period: "",
       project_id: project_id
     };
@@ -58,15 +59,13 @@ class ProjectDetailPage extends Component {
   }
 
   render() {
-    const { submitted, amount, period } = this.state;
-    const { loading, errors } = this.props;
     const project = this.selectProject();
 
     return (
       <div className="view-project-detail-page">
         <Grid stackable>
           <Grid.Row>
-            <PaymentProgress />
+            <PaymentProgress activeStep='1' />
           </Grid.Row>
           <Grid.Column className='infoColumn'>
             <h1 className='projectTitle'>{project && project.title}</h1>
@@ -80,7 +79,7 @@ class ProjectDetailPage extends Component {
               <Form size='large'>
                 <label className='form-group' htmlFor="amount">Bitte wählen Sie Ihren Spendenbetrag aus</label>
                 <Form.Group inline>
-                  <Form.Input width={5} />
+                  <Form.Input placeholder='5' width={5} />
                   <Icon name='euro' />
                 </Form.Group>
                 <Form.Field>
@@ -113,7 +112,7 @@ class ProjectDetailPage extends Component {
                     onChange={this.handleRadio}
                   />
                 </Form.Field>
-                <Button type='submit'>Weiter</Button>
+                <Link to={"/projekte/" + project._id + "/anschrift"}><Button>Weiter</Button></Link>
               </Form>
             </Grid.Row>
           </Grid.Column>
@@ -131,5 +130,5 @@ function mapStateToProps(state) {
   };
 }
 
-const connectedProjectDetailPage = connect(mapStateToProps)(ProjectDetailPage)
-export { connectedProjectDetailPage as ProjectDetailPage }
+const connectedProjectDonationPage = connect(mapStateToProps)(ProjectDonationPage)
+export { connectedProjectDonationPage as ProjectDonationPage }

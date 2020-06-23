@@ -100,7 +100,7 @@ class Project extends Component {
           <h3>{Math.round(project.funding)}€</h3>
           <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
-          {project.isOngoing && <Link to={"/projects/" + project._id}><Button>More</Button></Link>}
+          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>More</Button></Link>}
         </Card.Content>
       </Card>
     )
