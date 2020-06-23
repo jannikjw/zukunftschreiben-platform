@@ -68,6 +68,9 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   if (this.goal != 0) {
     apiRepresentation.percent = Math.ceil(apiRepresentation.funding / this.goal * 100)
   }
+  apiRepresentation.isOngoing = false;
+  const today = new Date();
+  apiRepresentation.isOngoing = (today <= new Date(this.endDate) && today >= new Date(this.startDate));
   return apiRepresentation;
 });
 

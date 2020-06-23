@@ -8,4 +8,33 @@
   .project-wrapper {
     padding-top: 20px;
   }
+
+  .topBar {
+    background-color: #f18a5d;
+    padding: 200px 20px 0px 50px;
+    height: 95vh;
+    margin: auto;
+    text-align: center;
+  }
+
+  h1,
+  h2 {
+    color: white;
+    text-align: left;
+    font-weight: 200;
+  }
+
+  .scroll {
+    width: 30px;
+    animation: move 1s infinite alternate;
+  }
+
+  @keyframes move {
+    from {
+      transform: translateY(0px);
+    }
+    to {
+      transform: translateY(10px);
+    }
+  }
 }

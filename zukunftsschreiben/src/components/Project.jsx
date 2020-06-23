@@ -5,13 +5,14 @@ import { likeActions } from "../store/actions/like.actions";
 import { donationActions } from "../store/actions/donation.actions";
 import { connect } from 'react-redux';
 
+import './Project.scss';
+
 class Project extends Component {
   constructor(props) {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
     this.incrementFunding = this.incrementFunding.bind(this)
-
   }
 
   likeProject() {
@@ -50,11 +51,11 @@ class Project extends Component {
   }
 
   colorForProgress() {
-    const fundingLevelLowBoundary = 40;
+    const fundingLevelLowBoundary = 50;
     const fundingLevelAchievedBoundary = 100;
     const fundingLevelLowColor = "yellow";
-    const fundingLevelOngoingColor = "green";
-    const fundingLevelAchievedColor = "olive";
+    const fundingLevelOngoingColor = "olive";
+    const fundingLevelAchievedColor = "green";
 
     const { percent } = this.props.project;
 
@@ -79,9 +80,8 @@ class Project extends Component {
     const [{ value: mo }, , { value: da }, , { value: ye }] = dateTimeFormat.formatToParts(endD)
     startD = `${day}.${month}.${year}`
     endD = `${da}.${mo}.${ye}`
-
     return (
-      <Card fluid>
+      <Card fluid classname='component-project'>
         <Card.Content>
           <Image src={project.image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{project.title}</Card.Header>
@@ -99,8 +99,7 @@ class Project extends Component {
           <h3>{Math.round(project.funding)}€</h3>
           <Progress value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
-
-          <Link to={"/projects/" + project._id}><Button>More</Button></Link>
+          {project.isOngoing && <Link to={"/projects/" + project._id}><Button>More</Button></Link>}
         </Card.Content>
       </Card>
     )

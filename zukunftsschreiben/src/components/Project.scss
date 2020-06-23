@@ -1,0 +1,10 @@
+@import "../resources/style/variables.scss";
+
+.component-project {
+  img {
+    border-bottom: solid $primary-color !important;
+    height: 200px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+}

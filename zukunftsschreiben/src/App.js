@@ -52,7 +52,7 @@ class App extends React.Component {
           <Switch>
             {this.shouldShowApplication() &&
               <div>
-                <Route exact path="/" component={HomePage} />
+                <Route exact path="/" component={ProjectsPage} />
                 <Route exact path="/projects" component={ProjectsPage} />
                 <Route exact path="/projects/:project_id" component={ProjectDetailPage} />
 
