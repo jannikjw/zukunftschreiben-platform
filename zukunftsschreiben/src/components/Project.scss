@@ -1,0 +1,27 @@
+@import "../resources/style/variables.scss";
+
+.component-project {
+  &.non-current {
+    background-color: #cccccccc !important;
+
+    .progressBar {
+      background: repeating-linear-gradient(
+        45deg,
+        $strong-color,
+        $strong-color 10px,
+        $primary-color 10px,
+        $primary-color 20px
+      );
+      div {
+        background-color: transparent !important;
+      }
+    }
+  }
+
+  img {
+    border-bottom: solid $primary-color !important;
+    height: 200px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+}

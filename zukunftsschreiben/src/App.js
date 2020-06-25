@@ -7,6 +7,7 @@ import { history } from './helpers';
 import { authActions } from './store/actions';
 
 import { PrivateRoute } from './components/PrivateRoute';
+import { Navbar } from './components/Navbar';
 
 import { HomePage } from './views/HomePage';
 import { RegisterPage } from './views/RegisterPage';
@@ -19,7 +20,8 @@ import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
 import { ProjectsPage } from './views/ProjectsPage';
 import { CreateProjectPage } from './views/CreateProjectPage';
-import { ProjectDetailPage } from './views/ProjectDetailPage';
+import { ProjectDonationPage } from './views/ProjectDonationPage';
+import { ProjectAddressPage } from './views/ProjectAddressPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -47,12 +49,14 @@ class App extends React.Component {
     return (
       <div className="container">
         <Router history={history}>
+          <Navbar />
           <Switch>
             {this.shouldShowApplication() &&
               <div>
-                <Route exact path="/" component={HomePage} />
-                <Route exact path="/projects" component={ProjectsPage} />
-                <Route exact path="/projects/:project_id" component={ProjectDetailPage} />
+                <Route exact path="/" component={ProjectsPage} />
+                <Route exact path="/projekte" component={ProjectsPage} />
+                <Route exact path="/projekte/:project_id" component={ProjectDonationPage} />
+                <Route exact path="/projekte/:project_id/anschrift" component={ProjectAddressPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />
@@ -63,7 +67,6 @@ class App extends React.Component {
                 <Route path="/reset-password" component={ResetPasswordPage} />
                 <PrivateRoute path="/profile" component={ProfilePage} />
                 <PrivateRoute path="/create-project" component={CreateProjectPage} />
-
                 <PrivateRoute path="/profile" component={ProfilePage} />
 
               </div>

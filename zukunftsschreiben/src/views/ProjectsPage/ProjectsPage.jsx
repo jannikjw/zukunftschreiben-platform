@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Project } from "../../components/Project"
-import { Grid } from 'semantic-ui-react'
+import { Grid, Icon } from 'semantic-ui-react'
 
 import { projectActions } from '../../store/actions';
 import './ProjectsPage.scss';
@@ -30,12 +30,18 @@ class ProjectsPage extends Component {
     const { projects } = this.props
     return (
       <div className="view-projects-page">
-        <h1>ProjectsPage</h1>
-        {projects &&
-          <Grid stackable columns={2}>
-            {this.renderProjects()}
-          </Grid>
-        }
+        <div className='topBar'>
+          <h1>Zukunftschreiben mit unseren Projekten</h1>
+          <h2>Sehen Sie unsere vergangenen und künftigen Projekte. <br /> Spenden Sie an aktuelle Projekte.</h2>
+          <Icon name='chevron down' size='large' inverted className='scroll' />
+        </div>
+        <div className="project-wrapper">
+          {projects &&
+            <Grid stackable columns={2}>
+              {this.renderProjects()}
+            </Grid>
+          }
+        </div>
       </div>
     )
   }

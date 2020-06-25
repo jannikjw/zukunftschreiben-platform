@@ -41,6 +41,7 @@ exports.createProject = [
         endDate: new Date(req.body.endDate),
         author: req.user._id,
         username: req.user.username,
+        goal: req.body.goal,
       });
 
       const savedProject = await project.save();
@@ -78,16 +79,20 @@ exports.getAll = [
       }
 
       if (isAdmin) {
-        ProjectModel.find()
-          .sort({ createdAt: -1 })
+        ProjectModel.find({}, null, {
+          populate: ['likes', 'donations']
+        })
+          .sort({ endDate: -1 })
           .then((projects) => {
             const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
           })
       }
       else {
-        ProjectModel.find({ status: 'shown' })
-          .sort({ createdAt: -1 })
+        ProjectModel.find({ status: "shown" }, null, {
+          populate: ['likes', 'donations']
+        })
+          .sort({ endDate: -1 })
           .then((projects) => {
             const projectsData = projects.map(p => p.toApiRepresentation(user_id));
             apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);

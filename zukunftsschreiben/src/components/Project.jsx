@@ -5,7 +5,7 @@ import { likeActions } from "../store/actions/like.actions";
 import { donationActions } from "../store/actions/donation.actions";
 import { connect } from 'react-redux';
 
-const goal = 1000;
+import './Project.scss';
 
 class Project extends Component {
   constructor(props) {
@@ -13,7 +13,6 @@ class Project extends Component {
 
     this.likeProject = this.likeProject.bind(this)
     this.incrementFunding = this.incrementFunding.bind(this)
-
   }
 
   likeProject() {
@@ -52,13 +51,13 @@ class Project extends Component {
   }
 
   colorForProgress() {
-    const fundingLevelLowBoundary = 40;
+    const fundingLevelLowBoundary = 50;
     const fundingLevelAchievedBoundary = 100;
     const fundingLevelLowColor = "yellow";
-    const fundingLevelOngoingColor = "green";
-    const fundingLevelAchievedColor = "olive";
+    const fundingLevelOngoingColor = "olive";
+    const fundingLevelAchievedColor = "green";
 
-    const { funding, percent } = this.props.project;
+    const { percent } = this.props.project;
 
     if (percent < fundingLevelLowBoundary) return fundingLevelLowColor;
     if (percent < fundingLevelAchievedBoundary) return fundingLevelOngoingColor;
@@ -72,7 +71,6 @@ class Project extends Component {
   }
 
   render() {
-    const { loading, errors } = this.props;
     const { project } = this.props;
 
     let startD = new Date(project.startDate)
@@ -84,7 +82,7 @@ class Project extends Component {
     endD = `${da}.${mo}.${ye}`
 
     return (
-      <Card fluid>
+      <Card fluid className={'component-project' + (!project.isOngoing ? ' non-current' : '')}>
         <Card.Content>
           <Image src={project.image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{project.title}</Card.Header>
@@ -100,10 +98,9 @@ class Project extends Component {
         </Card.Content>
         <Card.Content>
           <h3>{Math.round(project.funding)}€</h3>
-          <Progress value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
+          <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
-
-          <Link to={"/" + project._id}><Button>More</Button></Link>
+          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>More</Button></Link>}
         </Card.Content>
       </Card>
     )

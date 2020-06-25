@@ -40,7 +40,7 @@ function likeProject(project) {
         },
         error => {
           // if the like didn't succeed roll back the change
-          dispatch(updateProject(getOptimisticallyUpdatedProject(project, true)));
+          dispatch(updateProject(getOptimisticallyUpdatedProject(project, false)));
         }
       );
   };

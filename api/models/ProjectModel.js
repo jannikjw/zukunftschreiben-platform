@@ -55,19 +55,22 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   apiRepresentation.likes = this.likes ? this.likes.length : 0;
   apiRepresentation.userHasLiked = false
   if (this.likes && user_id) {
-    apiRepresentation.userHasLiked = this.likes.find(l => l.author == user_id) ? true : false;
+    apiRepresentation.userHasLiked = this.likes.find(l => l.author_id == user_id) ? true : false;
   }
   apiRepresentation.funding = 0;
   if (this.donations) {
-    apiRepresentation.funding = (this.donations
+    apiRepresentation.funding = parseFloat((this.donations
       .map(d => d.amount)
-      .reduce((sum, current) => sum + current, 0) / 100).toFixed(2)
+      .reduce((sum, current) => sum + current, 0) / 100).toFixed(2))
   }
   apiRepresentation.goal = this.goal;
   apiRepresentation.percent = 0;
   if (this.goal != 0) {
-    apiRepresentation.percent = Math.ceil(this.funding / this.goal * 100)
+    apiRepresentation.percent = Math.ceil(apiRepresentation.funding / this.goal * 100)
   }
+  apiRepresentation.isOngoing = false;
+  const today = new Date();
+  apiRepresentation.isOngoing = (today <= new Date(this.endDate) && today >= new Date(this.startDate));
   return apiRepresentation;
 });
 
