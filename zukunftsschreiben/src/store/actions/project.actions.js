@@ -7,11 +7,11 @@ export const projectActions = {
   getProject,
 };
 
-function create(title, description, category, status, startDate, endDate) {
+function create(title, description, category, hidden, startDate, endDate, image, fundingGoal) {
   return dispatch => {
     dispatch(request({ title }));
 
-    projectService.create(title, description, category, status, startDate, endDate)
+    projectService.create(title, description, category, hidden, startDate, endDate, image, fundingGoal)
       .then(
         project => {
           dispatch(success(project));

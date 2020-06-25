@@ -35,13 +35,14 @@ function handleResponse(response) {
 // -----------------
 // service functions
 // -----------------
-function create(title, description, category, status, startDate, endDate) {
+function create(title, description, category, hidden, startDate, endDate, image, fundingGoal) {
+  console.log(title, description, category, hidden, startDate, endDate, image, fundingGoal)
   const requestOptions = {
     method: 'POST',
     headers: authHeader(),
-    body: JSON.stringify({ title, description, category, status, startDate, endDate })
-  };
-
+    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal })
+  };  
+  console.log(requestOptions)
   return fetch(`${API_URL}/project/create`, requestOptions)
     .then(handleResponse);
 }
