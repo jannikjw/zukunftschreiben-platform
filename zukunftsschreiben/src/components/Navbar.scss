@@ -1,0 +1,116 @@
+@import "../resources/style/variables.scss";
+
+.component-navbar {
+  margin-top: 10px;
+  width: 100%;
+
+  .nav {
+    height: $navbar-height;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: white;
+
+    .left {
+      display: flex;
+      justify-content: flex-start;
+      width: 65%;
+      padding: 0;
+    }
+
+    .right {
+      display: flex;
+      justify-content: flex-end;
+      width: 35%;
+      padding: 0;
+    }
+
+    .navlink {
+      list-style: none;
+      height: $navbar-height - 13px;
+      margin-top: 6px;
+      margin-bottom: 7px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      border-left: 1px solid white;
+    }
+
+    .navlink:first-of-type {
+      border-left: none;
+    }
+
+    .navlink a {
+      font-size: 0.8em;
+      color: $strong-color;
+      text-decoration: none;
+    }
+
+    .navlink a:hover {
+      cursor: pointer;
+      color: $primary-color;
+    }
+
+    .navlink.logo {
+      height: $navbar-height;
+      margin: 0;
+      padding: 0;
+      padding-right: 10px;
+
+      a {
+        margin-left: 1px;
+        display: flex;
+        align-items: center;
+      }
+
+      span {
+        margin-left: 6px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        text-transform: capitalize;
+        letter-spacing: 0.03em;
+      }
+
+      img {
+        object-fit: cover;
+        object-position: center;
+        height: $navbar-height - 4px;
+        margin: 2px 0;
+      }
+    }
+
+    .left {
+      .navlink:nth-of-type(2) {
+        border-left: none;
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    margin-top: 0;
+
+    // this is a hack to ensure that even thought the
+    // navbar is nested with components, it extends to full width
+    // despite the 10px padding on the body on small screens
+    margin-left: -10px;
+    margin-right: -10px;
+    width: calc(100% + 20px);
+
+    .nav {
+      height: $navbar-height * 2;
+      flex-direction: column;
+      flex-wrap: nowrap;
+
+      .left,
+      .right {
+        width: 100%;
+        margin: 0;
+        justify-content: flex-start;
+      }
+
+      .right {
+        padding-left: 48px; // logo width
+      }
+    }
+  }
+}

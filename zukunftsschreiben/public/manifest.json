@@ -1,6 +1,6 @@
 {
-  "short_name": "Centerling News",
-  "name": "Centerling News – A Hacker News clone for Centerlings",
+  "short_name": "Zukunftschreiben",
+  "name": "Zukunftschreiben - Project Platform",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,18 +8,18 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "c20.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "c20.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#164194",
+  "theme_color": "#F28F1F",
   "background_color": "#ffffff"
 }

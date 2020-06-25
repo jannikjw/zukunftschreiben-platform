@@ -4,6 +4,7 @@ const API_URL = process.env.REACT_APP_API_HOST + '/api'
 
 export const projectService = {
   create,
+  getAll
 };
 
 // -----------------
@@ -25,8 +26,6 @@ function handleResponse(response) {
 
       const error = data
       return Promise.reject(error);
-    } else {
-      window.location = '/'
     }
     return data;
   });
@@ -56,5 +55,25 @@ function getProject(id) {
 
   return fetch(`${API_URL}/project/getProject`, requestOptions)
     .then(handleResponse);
+}
+
+function getAll() {
+  //gets Array of all projects
+  const requestOptions = {
+    method: 'GET',
+    headers: authHeader()
+  };
+  return fetch(`${API_URL}/project/`, requestOptions)
+    .then(handleResponse);
+}
+
+function updateProject(project_id) {
+  const requestOptions = {
+    method: 'PUT',
+    headers: authHeader(),
+  };
+
+  return fetch(`${API_URL}/project/${project_id}`, requestOptions)
+    .then(handleResponse)
 }
 

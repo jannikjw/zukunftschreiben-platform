@@ -1,6 +1,7 @@
 const ProjectModel = require("../models/ProjectModel");
+const UserModel = require("../models/UserModel");
 
-const { body, query, param } = require("express-validator");
+const { body } = require("express-validator");
 const rejectRequestsWithValidationErrors = require("../middleware/rejectRequestsWithValidationErrors");
 const authenticationRequired = require("../middleware/authenticationRequired");
 const authenticationOptional = require("../middleware/authenticationOptional");
@@ -67,4 +68,71 @@ exports.getProject = [
 			return apiResponse.ErrorResponse(res, err);
 		}
 	},
+];
+
+/**
+ * Get all projects.
+ *
+ * @return {Object}}
+ */
+exports.getAll = [
+  authenticationOptional,
+  rejectRequestsWithValidationErrors,
+  async (req, res) => {
+    try {
+      const user_id = req.user ? req.user._id : null
+      let isAdmin = false
+      if (user_id) {
+        isAdmin = await UserModel.findById(user_id)
+          .then((user) => user.isAdmin)
+          .catch(e => console.log(e))
+      }
+
+      if (isAdmin) {
+        ProjectModel.find({}, null, {
+          populate: ['likes', 'donations']
+        })
+          .sort({ endDate: -1 })
+          .then((projects) => {
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
+      else {
+        ProjectModel.find({ status: "shown" }, null, {
+          populate: ['likes', 'donations']
+        })
+          .sort({ endDate: -1 })
+          .then((projects) => {
+            const projectsData = projects.map(p => p.toApiRepresentation(user_id));
+            apiResponse.successResponseWithData(res, "Projects retrieved.", projectsData);
+          })
+      }
+    } catch (err) {
+      return apiResponse.ErrorResponse(res, err);
+    }
+  },
+];
+
+/**
+ * Update own Project.
+ * 
+ *  @return {Project}
+ */
+exports.update = [
+  authenticationRequired,
+  rejectRequestsWithValidationErrors,
+  (req, res) => {
+    try {
+      ProjectModel.findByIdAndUpdate(req.params.project_id)
+        .then(project => {
+
+          project.save()
+            .then(() => res.json('Project updated.'))
+            .catch(err => res.status(400).json('Error: ' + err))
+        })
+    } catch (err) {
+      return apiResponse.ErrorResponse(res, err);
+    }
+  },
 ];

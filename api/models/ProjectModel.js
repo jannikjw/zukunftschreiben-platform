@@ -34,4 +34,60 @@ ProjectSchema.method("updateLastInteraction", function () {
 	return;
 });
 
+ProjectSchema.virtual('likes', {
+  ref: 'Like',
+  localField: '_id',
+  foreignField: 'project_id'
+});
+
+ProjectSchema.virtual('comments', {
+  ref: 'Comment',
+  localField: '_id',
+  foreignField: 'project_id'
+});
+
+ProjectSchema.virtual('donations', {
+  ref: 'Donation',
+  localField: '_id',
+  foreignField: 'project_id'
+});
+
+
+
+ProjectSchema.method("toApiRepresentation", function (user_id) {
+  apiRepresentation = {}
+
+  apiRepresentation._id = this._id;
+  apiRepresentation.author = this.author;
+  apiRepresentation.username = this.username;
+  apiRepresentation.title = this.title;
+  apiRepresentation.description = this.description;
+  apiRepresentation.category = this.category;
+  apiRepresentation.status = this.status;
+  apiRepresentation.startDate = this.startDate;
+  apiRepresentation.endDate = this.endDate;
+  apiRepresentation.likes = this.likes ? this.likes.length : 0;
+  apiRepresentation.userHasLiked = false
+  if (this.likes && user_id) {
+    apiRepresentation.userHasLiked = this.likes.find(l => l.author_id == user_id) ? true : false;
+  }
+  apiRepresentation.funding = 0;
+  if (this.donations) {
+    apiRepresentation.funding = parseFloat((this.donations
+      .map(d => d.amount)
+      .reduce((sum, current) => sum + current, 0) / 100).toFixed(2))
+  }
+  apiRepresentation.goal = this.goal;
+  apiRepresentation.percent = 0;
+  if (this.goal != 0) {
+    apiRepresentation.percent = Math.ceil(apiRepresentation.funding / this.goal * 100)
+  }
+  apiRepresentation.isOngoing = false;
+  const today = new Date();
+  apiRepresentation.isOngoing = (today <= new Date(this.endDate) && today >= new Date(this.startDate));
+  return apiRepresentation;
+});
+
+
+
 module.exports = mongoose.model("Project", ProjectSchema);

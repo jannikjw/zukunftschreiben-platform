@@ -7,16 +7,16 @@ import { App } from './App';
 
 import * as serviceWorker from './serviceWorker';
 
-import 'semantic-ui-css/semantic.min.css';
+import 'semantic-ui-css/semantic.min.css'
 import './resources/style/index.scss';
 
 require('dotenv').config()
 
 render(
-    <Provider store={store}>
-        <App />
-    </Provider>,
-    document.getElementById('root')
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change
