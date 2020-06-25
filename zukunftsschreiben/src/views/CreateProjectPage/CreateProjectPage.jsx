@@ -126,10 +126,9 @@ class CreateProjectPage extends React.Component {
             value={description}
             name='description'
             />
-          <Form.Field fluid>
+          <Form.Field >
             <label>Category</label>
             <Dropdown 
-            fluid 
             search
             selection
             allowAdditions
@@ -140,7 +139,7 @@ class CreateProjectPage extends React.Component {
             placeholder='Category' />
           </Form.Field>
           <Form.Group widths='equal'>
-            <Form.Field fluid>
+            <Form.Field >
               <label>Start Date</label>
               <DatePicker 
                 name="startDate"
@@ -149,7 +148,7 @@ class CreateProjectPage extends React.Component {
                 dateFormat="MM/dd/yyyy"
               />
             </Form.Field>
-            <Form.Field fluid>
+            <Form.Field >
               <label>End Date</label>
               <DatePicker  
                 name="endDate"
@@ -196,7 +195,6 @@ class CreateProjectPage extends React.Component {
               toggle 
               name="hidden"
               onClick={this.handleToggle}
-              active={hidden}
               defaultChecked/>
             </Form.Field>
           </Form.Group>
