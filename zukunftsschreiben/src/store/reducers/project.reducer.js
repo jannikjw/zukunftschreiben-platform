@@ -14,13 +14,13 @@ function updateProject(projects, project) {
   return updatedProjects;
 }
 
-
 export function project(state = initialState, action) {
   switch (action.type) {
     case projectConstants.CREATE_PROJECT_REQUEST_INITIATED:
       return {
         ...state, ...{
-          creating: true
+          creating: true,
+          project: null
         }
       };
     case projectConstants.CREATE_PROJECT_REQUEST_SUCCEEDED:
@@ -70,9 +70,7 @@ export function project(state = initialState, action) {
           errors: action.error,
         }
       };
-
-
     default:
       return state
-  }
+  };
 }
