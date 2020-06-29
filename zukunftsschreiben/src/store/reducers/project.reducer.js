@@ -1,6 +1,6 @@
 import { projectConstants } from '../constants';
 
-const initialState = { creating: false, errors: {}, project: null, projects: [] };
+const initialState = { creating: false, errors: {}, project: null, projects: [], isAdmin: false, editing_project: null };
 
 
 function updateProject(projects, project) {
@@ -16,14 +16,14 @@ function updateProject(projects, project) {
 
 export function project(state = initialState, action) {
   switch (action.type) {
-    case projectConstants.CREATE_PROJECT_REQUEST_INITIATED:
+    case projectConstants.CREATE_REQUEST_INITIATED:
       return {
         ...state, ...{
           creating: true,
           project: null
         }
       };
-    case projectConstants.CREATE_PROJECT_REQUEST_SUCCEEDED:
+    case projectConstants.CREATE_REQUEST_SUCCEEDED:
       return {
         ...state, ...{
           creating: false,
@@ -31,7 +31,7 @@ export function project(state = initialState, action) {
           errors: {}
         }
       };
-    case projectConstants.CREATE_PROJECT_REQUEST_FAILED:
+    case projectConstants.CREATE_REQUEST_FAILED:
       return {
         ...state, ...{
           creating: false,
@@ -45,14 +45,14 @@ export function project(state = initialState, action) {
         }
       };
     case projectConstants.GET_PROJECTS_REQUEST_SUCCEEDED:
-      const data = action.projectData;
       return {
         ...state, ...{
           initialLoadHappened: true,
           loading: false,
           errors: {},
-          projects: data.data,
-        }
+          projects: action.data.data.projectData,
+          isAdmin: action.data.data.isAdmin,
+        }      
       };
     case projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED:
       return {
@@ -70,6 +70,19 @@ export function project(state = initialState, action) {
           errors: action.error,
         }
       };
+      case projectConstants.GET_PROJECT_REQUEST_INITIATED:
+        return {
+          ...state, ...{
+            loading: true,
+          }
+        };
+      case projectConstants.GET_PROJECT_REQUEST_SUCCEEDED:
+        return {
+          ...state, ...{
+            editing_project: action.project.data,
+            loading: false,
+          }      
+        };
     default:
       return state
   };

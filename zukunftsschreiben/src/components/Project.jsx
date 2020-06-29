@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
 import { likeActions } from "../store/actions/like.actions";
 import { donationActions } from "../store/actions/donation.actions";
+import { projectActions } from "../store/actions/project.actions";
 import { connect } from 'react-redux';
 
 import './Project.scss';
@@ -33,6 +34,11 @@ class Project extends Component {
         console.error(err)
       }
     }
+  }
+
+  deleteProject(id) {
+    //if users are not logged in but try to vote they are redirected to login pag
+    this.props.dispatch(projectActions.deleteProject(id))
   }
 
   incrementFunding(amount) {
@@ -70,6 +76,10 @@ class Project extends Component {
     return `${percent}% von ${goal}€ Ziel erreicht`
   }
 
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   render() {
     const { project } = this.props;
 
@@ -101,6 +111,8 @@ class Project extends Component {
           <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
           <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
           {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>More</Button></Link>}
+          {this.props.isAdmin && <Link to={"/edit-project/" + project._id}><Button>Edit</Button></Link> }
+          {this.props.isAdmin && <Button onClick={() => { this.deleteProject(project._id); this.sleep(1000).then(()=> {window.location = "/"})} }>Delete</Button>}
         </Card.Content>
       </Card>
     )
@@ -109,11 +121,12 @@ class Project extends Component {
 
 function mapStateToProps(state) {
   const { loggedIn, user } = state.login;
-  const { loading, errors } = state.project;
+  const { loading, errors, isAdmin } = state.project;
   return {
     user,
     loggedIn,
     loading,
+    isAdmin,
     errors
   };
 }

@@ -5,7 +5,9 @@ var router = express.Router();
 
 // Authentication Required
 router.post('/create', ProjectController.createProject);
-router.get('/getProject', ProjectController.getProject);
+router.put('/update', ProjectController.updateProject);
+router.delete('/delete', ProjectController.deleteProject);
+router.get('/getProject/:id', ProjectController.getProject);
 router.get('/', ProjectController.getAll);
 router.put('/', ProjectController.update);
 

@@ -5,12 +5,13 @@ import {  Form,
           Button, 
           Dropdown,
           Label,
-          Image
+          Image,
          } from 'semantic-ui-react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { projectActions } from '../../store/actions';
+import { projectConstants } from '../../store/constants';
 
 import './CreateProjectPage.scss';
 
@@ -42,6 +43,7 @@ class CreateProjectPage extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleToggle =this.handleToggle.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleAddition = this.handleAddition.bind(this);
 
     this.state = {
       title: "",
@@ -71,6 +73,12 @@ class CreateProjectPage extends React.Component {
 
   handleDropdownChange = (e, { value }) => this.setState({category: value })
 
+  handleAddition = (e, { value }) => {
+    this.setState((prevState) => ({
+      categoryOptions: [{ text: value, value }, ...prevState.categoryOptions],
+    }))
+  }
+
   handleToggle(e) {
     this.setState((prevState) => ({ hidden: !prevState.hidden }))
   }
@@ -95,17 +103,125 @@ class CreateProjectPage extends React.Component {
       })
   }
 
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ submitted: true });
     const { title, description, category, hidden, startDate, endDate, image, fundingGoal } = this.state;
     const { dispatch } = this.props;
-    dispatch(projectActions.create(title, description, category, hidden, startDate, endDate, image, fundingGoal))
+    if (this.handleLocalErrors()) {
+      dispatch(projectActions.create(title, description, category, hidden, startDate, endDate, image, fundingGoal))
+    }
+    this.sleep(1000).then(()=> {
+      window.location = "/"
+    })
+  }
+
+  handleLocalErrors() {
+    const { title, description, category, startDate, endDate, image, fundingGoal } = this.state;
+    const { dispatch } = this.props;
+
+    let validationErrors = [];
+
+    if (!title) {
+      validationErrors.push({
+        value: title,
+        msg: 'A Title is required.',
+        param: 'title',
+        location: 'local'
+      })
+    }
+
+    if (!description) {
+      validationErrors.push({
+        value: description,
+        msg: 'A Description is required.',
+        param: 'description',
+        location: 'local'
+      })
+    }
+
+    if (!category) {
+      validationErrors.push({
+        value: category,
+        msg: 'A category is required.',
+        param: 'category',
+        location: 'local'
+      })
+    }
+
+    if (!image) {
+      validationErrors.push({
+        value: image,
+        msg: 'An image is required',
+        param: 'image',
+        location: 'local'
+      })
+    }
+
+    if (!startDate) {
+      validationErrors.push({
+        value: startDate,
+        msg: 'startDate is required.',
+        param: 'startDate',
+        location: 'local'
+      })
+    }
+
+    if (!endDate) {
+      validationErrors.push({
+        value: endDate,
+        msg: 'Password confirmation is required.',
+        param: 'endDate',
+        location: 'local'
+      })
+    }
+
+    if (endDate && startDate >= endDate) {
+      validationErrors.push({
+        value: endDate,
+        msg: 'The End Date has to be after the Start Date.',
+        param: 'endDate',
+        location: 'local'
+      })
+    }
+
+    if (validationErrors.length > 0) {
+      function failure(error) { return { type: projectConstants.CREATE_REQUEST_FAILED, error } }
+      dispatch(failure({
+        status: 0,
+        message: 'Local Validation Error.',
+        data: validationErrors
+      }));
+      return false
+    }
+
+    return true;
+  }
+
+  errorsForField(name) {
+    const { errors } = this.props;
+
+    if (!errors) {
+      return '';
+    }
+    if (!errors.data) {
+      return '';
+    }
+    if (!errors.data.length > 0) {
+      return '';
+    }
+    return errors.data
+      .filter(e => e.param === name)
+      .map(e => <div className="error" key={e.msg}>{e.msg}</div>)
   }
 
 
   render() {
-    const { title, description, category, hidden, startDate, endDate, fundingGoal, categoryOptions} = this.state;
+    const { title, description, category, startDate, endDate, fundingGoal, categoryOptions} = this.state;
 
     return (
       <div className='view-create-project-page'>
@@ -118,6 +234,7 @@ class CreateProjectPage extends React.Component {
             value={title}
             name='title'
             />
+          {this.errorsForField('title')}
           <Form.Input 
             fluid 
             label='Description' 
@@ -126,18 +243,22 @@ class CreateProjectPage extends React.Component {
             value={description}
             name='description'
             />
+          {this.errorsForField('description')}
           <Form.Field >
             <label>Category</label>
             <Dropdown 
+            options={categoryOptions}
             search
             selection
+            fluid
             allowAdditions
             name="category" 
             value={category}
             onChange={this.handleDropdownChange}
-            options={categoryOptions}
+            onAddItem={this.handleAddition}
             placeholder='Category' />
           </Form.Field>
+          {this.errorsForField('category')}
           <Form.Group widths='equal'>
             <Form.Field >
               <label>Start Date</label>
@@ -148,6 +269,7 @@ class CreateProjectPage extends React.Component {
                 dateFormat="MM/dd/yyyy"
               />
             </Form.Field>
+            {this.errorsForField('startDate')}
             <Form.Field >
               <label>End Date</label>
               <DatePicker  
@@ -157,6 +279,7 @@ class CreateProjectPage extends React.Component {
                 dateFormat="MM/dd/yyyy"
               />
             </Form.Field>
+            {this.errorsForField('endDate')}
           </Form.Group>
           <Form.Field>
               <label>Funding Goal</label>
@@ -173,6 +296,7 @@ class CreateProjectPage extends React.Component {
                   <Label>.00</Label>
               </Form.Input>
           </Form.Field>
+          {this.errorsForField('fundingGoal')}
           <Form.Group widths='equal'>
             <Form.Field>
               <Button
@@ -188,6 +312,7 @@ class CreateProjectPage extends React.Component {
                 onChange={this.handleFileChange}
               />
             </Form.Field>
+            {this.errorsForField('image')}
             <Image src={this.state.image} />
             <Form.Field>
               <label>Hide</label>
