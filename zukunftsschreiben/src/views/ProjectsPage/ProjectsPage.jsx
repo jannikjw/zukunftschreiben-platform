@@ -13,7 +13,7 @@ class ProjectsPage extends Component {
   }
 
   renderProjects() {
-    const { projects, user } = this.props;
+    const { projects } = this.props;
 
     if (!projects) return '';
     if (!projects.length > 0) return '';

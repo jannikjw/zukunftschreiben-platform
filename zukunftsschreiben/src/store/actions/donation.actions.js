@@ -5,18 +5,6 @@ export const donationActions = {
   donateToProject
 };
 
-
-// -----------------
-// private functions
-// -----------------
-
-function getOptimisticallyUpdatedProject(project, amount) {
-  let expectedProject = JSON.parse(JSON.stringify(project))
-  expectedProject.funding = project.funding + amount;
-  return expectedProject;
-}
-
-
 // -----------------
 // actions
 // -----------------
@@ -24,22 +12,24 @@ function getOptimisticallyUpdatedProject(project, amount) {
 function donateToProject(project, amount) {
 
   return dispatch => {
-    dispatch(updateProject(getOptimisticallyUpdatedProject(project, amount)));
+    dispatch(request(project._id))
 
     donationService.donateToProject(project._id, amount)
       .then(
         response => {
           // if the donation succeeded still update the project with the one from the server
           const updatedProject = response.data;
-          dispatch(updateProject(updatedProject));
+          dispatch(success(updatedProject));
         },
         error => {
           // if the like didn't succeed roll back the change
-          dispatch(updateProject(getOptimisticallyUpdatedProject(project, -amount)));
+          dispatch(failure(error));
         }
       );
   };
 
-  function updateProject(project) { return { type: projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED, project } }
+  function request(project_id) { return { type: projectConstants.UPDATE_PROJECT_REQUEST_INITIATED, project_id } }
+  function success(project) { return { type: projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED, project } }
+  function failure(error, project_id) { return { type: projectConstants.UPDATE_PROJECT_REQUEST_FAILED, error, project_id } }
 }
 

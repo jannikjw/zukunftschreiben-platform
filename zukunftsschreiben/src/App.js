@@ -9,7 +9,6 @@ import { authActions } from './store/actions';
 import { PrivateRoute } from './components/PrivateRoute';
 import { Navbar } from './components/Navbar';
 
-import { HomePage } from './views/HomePage';
 import { RegisterPage } from './views/RegisterPage';
 import { VerifyPage } from './views/VerifyPage';
 import { RequestVerificationCodePage } from './views/RequestVerificationCodePage';
