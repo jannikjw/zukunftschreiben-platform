@@ -19,6 +19,7 @@ import { ForgotPasswordPage } from './views/ForgotPasswordPage';
 import { ResetPasswordPage } from './views/ResetPasswordPage';
 import { ProjectsPage } from './views/ProjectsPage';
 import { CreateProjectPage } from './views/CreateProjectPage';
+import { EditProjectPage } from './views/EditProjectPage';
 import { ProjectDonationPage } from './views/ProjectDonationPage';
 import { ProjectAddressPage } from './views/ProjectAddressPage';
 import { ThankYouPage } from './views/ThankYouPage';
@@ -68,7 +69,7 @@ class App extends React.Component {
                 <Route path="/reset-password" component={ResetPasswordPage} />
                 <PrivateRoute path="/profile" component={ProfilePage} />
                 <PrivateRoute path="/create-project" component={CreateProjectPage} />
-                <PrivateRoute path="/profile" component={ProfilePage} />
+                <PrivateRoute path="/edit-project/:id" component={EditProjectPage} />
 
               </div>
             }

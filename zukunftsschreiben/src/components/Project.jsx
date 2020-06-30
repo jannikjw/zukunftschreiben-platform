@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, Image, Icon, Button, Progress } from 'semantic-ui-react';
 import { likeActions } from "../store/actions/like.actions";
 import { donationActions } from "../store/actions/donation.actions";
+import { projectActions } from "../store/actions/project.actions";
 import { connect } from 'react-redux';
 
 import './Project.scss';
@@ -34,6 +35,29 @@ class Project extends Component {
     }
   }
 
+<<<<<<< zukunftsschreiben/src/components/Project.jsx
+=======
+  deleteProject(id) {
+    //if users are not logged in but try to vote they are redirected to login pag
+    this.props.dispatch(projectActions.deleteProject(id))
+  }
+
+  incrementFunding(amount) {
+    const { loggedIn, project } = this.props
+
+    if (!loggedIn) {
+      window.location = '/login'
+    } else {
+
+      try {
+        this.props.dispatch(donationActions.donateToProject(project, amount))
+      } catch (err) {
+        console.error(err)
+      }
+    }
+  }
+
+>>>>>>> zukunftsschreiben/src/components/Project.jsx
   colorForProgress() {
     const fundingLevelLowBoundary = 50;
     const fundingLevelAchievedBoundary = 100;
@@ -52,6 +76,10 @@ class Project extends Component {
   textForLabel() {
     const { percent, goal } = this.props.project;
     return `${percent}% von ${goal}€ Ziel erreicht`
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   render() {
@@ -86,7 +114,13 @@ class Project extends Component {
         <Card.Content>
           <h3>{Math.round(project.funding)}€</h3>
           <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
+<<<<<<< zukunftsschreiben/src/components/Project.jsx
           {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>Spenden</Button></Link>}
+=======
+          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>Spenden</Button></Link>}
+          {this.props.isAdmin && <Link to={"/edit-project/" + project._id}><Button>Edit</Button></Link> }
+          {this.props.isAdmin && <Button onClick={() => { this.deleteProject(project._id); this.sleep(1000).then(()=> {window.location = "/"})} }>Delete</Button>}
+>>>>>>> zukunftsschreiben/src/components/Project.jsx
         </Card.Content>
       </Card>
     )
@@ -95,11 +129,12 @@ class Project extends Component {
 
 function mapStateToProps(state) {
   const { loggedIn, user } = state.login;
-  const { loading, errors } = state.project;
+  const { loading, errors, isAdmin } = state.project;
   return {
     user,
     loggedIn,
     loading,
+    isAdmin,
     errors
   };
 }

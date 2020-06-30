@@ -13,7 +13,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { projectActions } from '../../store/actions';
 import { projectConstants } from '../../store/constants';
 
-import './CreateProjectPage.scss';
+import './EditProjectPage.scss';
 
 function getBase64(img, callback) {
   const reader = new FileReader();
@@ -33,9 +33,10 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
-class CreateProjectPage extends React.Component {
+class EditProjectPage extends React.Component {
   constructor(props) {
     super(props);
+
     this.handleChange = this.handleChange.bind(this);
     this.handleDropdownChange = this.handleDropdownChange.bind(this);
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
@@ -56,12 +57,34 @@ class CreateProjectPage extends React.Component {
       likes: 0,
       submitted: false,
       image: null,
+      id: this.props.match.params.id,
       categoryOptions: [
         { key: 'School', text: 'School', value: 'School'},
         { key: 'Reading', text: 'Reading', value: 'Reading'},
         { key: 'Writing', text: 'Writing', value: 'Writing'},
       ]
     };
+  }
+
+  componentDidMount(){
+    const { dispatch } = this.props;
+    const { id } = this.state
+    dispatch(projectActions.getProjectAction(id) )
+    this.sleep(1000).then( () => {
+      const { editing_project } = this.props;
+      const project = editing_project
+      this.setState({
+        title: project.title,
+        description: project.description,
+        category: project.category,
+        hidden: project.hidden,
+        startDate: new Date(project.startDate),
+        endDate: new Date(project.endDate),
+        likes: project.likes,
+        fundingGoal: project.fundingGoal,
+        image: project.image
+      })
+    })
   }
 
   fileInputRef = React.createRef();
@@ -110,10 +133,10 @@ class CreateProjectPage extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ submitted: true });
-    const { title, description, category, hidden, startDate, endDate, image, fundingGoal } = this.state;
+    const { title, description, category, hidden, startDate, endDate, image, fundingGoal, id } = this.state;
     const { dispatch } = this.props;
     if (this.handleLocalErrors()) {
-      dispatch(projectActions.create(title, description, category, hidden, startDate, endDate, image, fundingGoal))
+      dispatch(projectActions.update(title, description, category, hidden, startDate, endDate, image, fundingGoal, id))
     }
     this.sleep(1000).then(()=> {
       window.location = "/"
@@ -121,7 +144,7 @@ class CreateProjectPage extends React.Component {
   }
 
   handleLocalErrors() {
-    const { title, description, category, startDate, endDate, image, fundingGoal } = this.state;
+    const { title, description, category, startDate, endDate, image } = this.state;
     const { dispatch } = this.props;
 
     let validationErrors = [];
@@ -221,7 +244,7 @@ class CreateProjectPage extends React.Component {
 
 
   render() {
-    const { title, description, category, startDate, endDate, fundingGoal, categoryOptions} = this.state;
+    const { title, description, category, categoryOptions, hidden, startDate, endDate, image, fundingGoal} = this.state;
 
     return (
       <div className='view-create-project-page'>
@@ -253,6 +276,7 @@ class CreateProjectPage extends React.Component {
             fluid
             allowAdditions
             name="category" 
+            selected={category}
             value={category}
             onChange={this.handleDropdownChange}
             onAddItem={this.handleAddition}
@@ -313,7 +337,7 @@ class CreateProjectPage extends React.Component {
               />
             </Form.Field>
             {this.errorsForField('image')}
-            <Image src={this.state.image} />
+            <Image src={image} />
             <Form.Field>
               <label>Hide</label>
               <Checkbox 
@@ -323,7 +347,7 @@ class CreateProjectPage extends React.Component {
               defaultChecked/>
             </Form.Field>
           </Form.Group>
-          <Button type="submit" onClick={this.handleSubmit}>Create Project</Button>
+          <Button type="submit" onClick={this.handleSubmit}>Edit Project</Button>
         </Form>
       </div>
     );
@@ -331,12 +355,12 @@ class CreateProjectPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { creating, errors } = state.project;
+  const { errors, editing_project } = state.project;
   return {
-    creating,
-    errors
+    errors,
+    editing_project
   };
 }
 
-const connectedCreateProjectPage = connect(mapStateToProps)(CreateProjectPage);
-export { connectedCreateProjectPage as CreateProjectPage }; 
+const connectedEditProjectPage = connect(mapStateToProps)(EditProjectPage);
+export { connectedEditProjectPage as EditProjectPage }; 

@@ -2,23 +2,35 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const ProjectSchema = new Schema(
-  {
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    category: { type: String, required: true },
-    status: { type: String, required: true, default: 'hidden' },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    author: { type: String, required: true },
-    username: { type: String, required: true },
-    goal: { type: Number, required: true }
-  },
-  {
-    timestamps: true,
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
-  }
+	{
+		title: { type: String, required: true },
+		description: { type: String, required: true },
+		category: { type: String, required: true },
+		hidden: { type: Boolean, required: true, default: true },
+		startDate: { type: Date, required: true },
+		endDate: { type: Date, required: true },
+		author: { type: String, required: true },
+		image: { type: String, required: true },
+		username: { type: String, required: true },
+		fundingGoal: { type: Number, required: true },
+	},
+	{
+		timestamps: true,
+		toObject: { virtuals: true },
+		toJSON: { virtuals: true },
+	}
 );
+
+ProjectSchema.method("toApiRepresentation", function (user) {
+	let obj = this.toObject();
+	obj.author = user._id;
+	obj.username = user.username;
+	return obj;
+});
+
+ProjectSchema.method("updateLastInteraction", function () {
+	return;
+});
 
 ProjectSchema.virtual('likes', {
   ref: 'Like',
@@ -49,9 +61,10 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
   apiRepresentation.title = this.title;
   apiRepresentation.description = this.description;
   apiRepresentation.category = this.category;
-  apiRepresentation.status = this.status;
+  apiRepresentation.hidden = this.hidden;
   apiRepresentation.startDate = this.startDate;
   apiRepresentation.endDate = this.endDate;
+  apiRepresentation.image = this.image;
   apiRepresentation.likes = this.likes ? this.likes.length : 0;
   apiRepresentation.userHasLiked = false
   if (this.likes && user_id) {
@@ -63,10 +76,10 @@ ProjectSchema.method("toApiRepresentation", function (user_id) {
       .map(d => d.amount)
       .reduce((sum, current) => sum + current, 0) / 100).toFixed(2))
   }
-  apiRepresentation.goal = this.goal;
+  apiRepresentation.goal = this.fundingGoal;
   apiRepresentation.percent = 0;
   if (this.goal != 0) {
-    apiRepresentation.percent = Math.ceil(apiRepresentation.funding / this.goal * 100)
+    apiRepresentation.percent = Math.ceil(apiRepresentation.funding / this.fundingGoal * 100)
   }
   apiRepresentation.isOngoing = false;
   const today = new Date();
