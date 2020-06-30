@@ -35,8 +35,6 @@ class Project extends Component {
     }
   }
 
-<<<<<<< zukunftsschreiben/src/components/Project.jsx
-=======
   deleteProject(id) {
     //if users are not logged in but try to vote they are redirected to login pag
     this.props.dispatch(projectActions.deleteProject(id))
@@ -57,7 +55,6 @@ class Project extends Component {
     }
   }
 
->>>>>>> zukunftsschreiben/src/components/Project.jsx
   colorForProgress() {
     const fundingLevelLowBoundary = 50;
     const fundingLevelAchievedBoundary = 100;
@@ -114,13 +111,9 @@ class Project extends Component {
         <Card.Content>
           <h3>{Math.round(project.funding)}€</h3>
           <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
-<<<<<<< zukunftsschreiben/src/components/Project.jsx
-          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>Spenden</Button></Link>}
-=======
           {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>Spenden</Button></Link>}
           {this.props.isAdmin && <Link to={"/edit-project/" + project._id}><Button>Edit</Button></Link> }
           {this.props.isAdmin && <Button onClick={() => { this.deleteProject(project._id); this.sleep(1000).then(()=> {window.location = "/"})} }>Delete</Button>}
->>>>>>> zukunftsschreiben/src/components/Project.jsx
         </Card.Content>
       </Card>
     )
