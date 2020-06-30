@@ -38,9 +38,17 @@ class EditProjectPage extends React.Component {
     this.handleAddition = this.handleAddition.bind(this);
 
     this.state = {
+      id: this.props.match.params.id,
+      title: "",
+      description: "",
+      category: "",
+      hidden: true,
+      startDate: new Date(),
+      endDate: new Date(),
+      fundingGoal: 1000,
+      likes: 0,
       submitted: false,
       image: null,
-      id: this.props.match.params.id,
       categoryOptions: [
         { key: 'School', text: 'School', value: 'School' },
         { key: 'Reading', text: 'Reading', value: 'Reading' },
@@ -51,8 +59,28 @@ class EditProjectPage extends React.Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { id } = this.state
+    const { id, waiting } = this.state
     dispatch(projectActions.getProjectAction(id))
+    this.sleep(4000)
+      .then(()=>{
+        if (this.props.editing_project){
+          this.setState({
+            title: this.props.editing_project.title,
+            description: this.props.editing_project.description,
+            category: this.props.editing_project.category,
+            hidden: this.props.editing_project.hidden,
+            startDate: this.props.editing_project.startDate,
+            endDate: this.props.editing_project.endDate,
+            fundingGoal: this.props.editing_project.fundingGoal,
+            likes: this.props.editing_project.likes,
+            submitted: false,
+            image: this.props.editing_project.image,
+          })
+          this.setState((prevState) => ({
+            categoryOptions: [{ text: this.props.editing_project.category, value: this.props.editing_project.category }, ...prevState.categoryOptions],
+          }))
+        }
+      })
   }
 
   fileInputRef = React.createRef();
@@ -224,7 +252,7 @@ class EditProjectPage extends React.Component {
             label='Title'
             placeholder='Title'
             onChange={this.handleChange}
-            value={project && project.title}
+            value={this.state.title || 'Not loaded yet'}
             name='title'
           />
           {this.errorsForField('title')}
@@ -233,7 +261,7 @@ class EditProjectPage extends React.Component {
             label='Description'
             placeholder='Description'
             onChange={this.handleChange}
-            value={project && project.description}
+            value={this.state.description || 'Not loaded yet'}
             name='description'
           />
           {this.errorsForField('description')}
@@ -246,8 +274,8 @@ class EditProjectPage extends React.Component {
               fluid
               allowAdditions
               name="category"
-              selected={project && project.category}
-              value={project && project.category}
+              selected={this.state.category || 'Not loaded yet'}
+              value={this.state.category || 'Not loaded yet'}
               onChange={this.handleDropdownChange}
               onAddItem={this.handleAddition}
               placeholder='Category' />
@@ -258,7 +286,7 @@ class EditProjectPage extends React.Component {
               <label>Start Date</label>
               {project && <DatePicker
                 name="startDate"
-                selected={new Date(project.startDate)}
+                selected={new Date(this.state.startDate)}
                 onChange={this.handleStartDateChange}
                 dateFormat="MM/dd/yyyy"
               />}
@@ -268,7 +296,7 @@ class EditProjectPage extends React.Component {
               <label>End Date</label>
               {project && <DatePicker
                 name="endDate"
-                selected={new Date(project.endDate)}
+                selected={new Date(this.state.endDate)}
                 onChange={this.handleEndDateChange}
                 dateFormat="MM/dd/yyyy"
               />}
@@ -283,7 +311,7 @@ class EditProjectPage extends React.Component {
               type='text'
               placeholder='Funding Goal'
               onChange={this.handleChange}
-              value={project && project.fundingGoal}
+              value={this.state.fundingGoal || 0}
               name='fundingGoal'>
               <Label basic>€</Label>
               <input />
@@ -307,7 +335,7 @@ class EditProjectPage extends React.Component {
               />
             </Form.Field>
             {this.errorsForField('image')}
-            <Image src={project && project.image} />
+            <Image src={this.state.image} />
             <Form.Field>
               <label>Hide</label>
               <Checkbox
