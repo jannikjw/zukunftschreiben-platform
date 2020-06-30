@@ -12,7 +12,6 @@ class Project extends Component {
     super(props)
 
     this.likeProject = this.likeProject.bind(this)
-    this.incrementFunding = this.incrementFunding.bind(this)
   }
 
   likeProject() {
@@ -29,21 +28,6 @@ class Project extends Component {
         } else {
           this.props.dispatch(likeActions.likeProject(project))
         }
-      } catch (err) {
-        console.error(err)
-      }
-    }
-  }
-
-  incrementFunding(amount) {
-    const { loggedIn, project } = this.props
-
-    if (!loggedIn) {
-      window.location = '/login'
-    } else {
-
-      try {
-        this.props.dispatch(donationActions.donateToProject(project, amount))
       } catch (err) {
         console.error(err)
       }
@@ -86,9 +70,9 @@ class Project extends Component {
         <Card.Content>
           <Image src={project.image || "https://images.pexels.com/photos/4827/nature-forest-trees-fog.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260"} wrapped />
           <Card.Header>{project.title}</Card.Header>
-          <Card.Meta>Project Duration: {startD + " - " + endD}</Card.Meta>
+          <Card.Meta>Projektdauer: {startD + " - " + endD}</Card.Meta>
           <Card.Description>{project.description}</Card.Description>
-          <Card.Description>Category: {project.category}</Card.Description>
+          <Card.Description>Kategorie: {project.category}</Card.Description>
         </Card.Content>
         <Card.Content extra>
           <Button onClick={() => this.likeProject()}>
@@ -99,8 +83,7 @@ class Project extends Component {
         <Card.Content>
           <h3>{Math.round(project.funding)}€</h3>
           <Progress className='progressBar' value={project.funding} total={project.goal} color={this.colorForProgress()}>{this.textForLabel()}</Progress>
-          <Button onClick={() => this.incrementFunding(10.50)}>Donate</Button>
-          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>More</Button></Link>}
+          {project.isOngoing && <Link to={"/projekte/" + project._id}><Button>Spenden</Button></Link>}
         </Card.Content>
       </Card>
     )

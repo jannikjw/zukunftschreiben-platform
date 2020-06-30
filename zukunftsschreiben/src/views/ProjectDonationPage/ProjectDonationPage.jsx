@@ -88,7 +88,6 @@ class ProjectDonationPage extends Component {
       })
     }
 
-    console.log("Validation Errors: " + validationErrors)
     if (validationErrors.length > 0) {
       function failure(error) { return { type: projectConstants.GET_PROJECTS_REQUEST_FAILED, error } }
       dispatch(failure({
@@ -184,12 +183,12 @@ class ProjectDonationPage extends Component {
                   />
                   {this.errorsForField("period")}
                 </Form.Field>
-                <div className="form-group">
+                <div>
                   {!loading &&
-                    <input type="submit" className="form-control" name="donate" value="Spenden" />
+                    <input type="submit" className="ui button" name="donate" value="Spenden" />
                   }
                   {loading &&
-                    <input type="submit" className="form-control" name="donate" value="Spenden..." disabled />
+                    <input type="submit" className="ui button" name="donate" value="Spenden..." disabled />
                   }
                 </div>
               </Form>

@@ -21,6 +21,7 @@ import { ProjectsPage } from './views/ProjectsPage';
 import { CreateProjectPage } from './views/CreateProjectPage';
 import { ProjectDonationPage } from './views/ProjectDonationPage';
 import { ProjectAddressPage } from './views/ProjectAddressPage';
+import { ThankYouPage } from './views/ThankYouPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -56,6 +57,7 @@ class App extends React.Component {
                 <Route exact path="/projekte" component={ProjectsPage} />
                 <Route exact path="/projekte/:project_id" component={ProjectDonationPage} />
                 <Route exact path="/projekte/:project_id/anschrift" component={ProjectAddressPage} />
+                <Route exact path="/projekte/:project_id/thanks" component={ThankYouPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />
