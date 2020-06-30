@@ -76,7 +76,10 @@ class Project extends Component {
         </Card.Content>
         <Card.Content extra>
           <Button onClick={() => this.likeProject()}>
-            <Icon name='like' />
+            {!project.userHasLiked &&
+              <i className='like icon'></i>}
+            {project.userHasLiked &&
+              <i className='like icon filled'></i>}
             {project.likes}
           </Button>
         </Card.Content>
