@@ -40,6 +40,14 @@ class EditProjectPage extends React.Component {
     this.state = {
       id: this.props.match.params.id,
       submitted: false,
+      title: '',
+      description: '',
+      category: '',
+      hidden: '',
+      startDate: new Date(),
+      endDate: new Date(),
+      image: '',
+      goal: 0,
       categoryOptions: [
         { key: 'School', text: 'School', value: 'School' },
         { key: 'Reading', text: 'Reading', value: 'Reading' },
@@ -49,9 +57,28 @@ class EditProjectPage extends React.Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const { id, waiting } = this.state
-    dispatch(projectActions.getProjectAction(id))
+    const project = this.selectedProject();
+    if (project) {
+      this.setState({
+        title: project.title,
+        description: project.description,
+        category: project.category,
+        hidden: project.hidden,
+        startDate: project.startDate,
+        endDate: project.endDate,
+        image: project.image,
+        goal: project.goal,
+      })
+    }
+  }
+
+  selectedProject() {
+    const { projects } = this.props;
+    const { id } = this.state;
+    if (!projects) {
+      return null;
+    }
+    return projects.find(p => id === p._id)
   }
 
   fileInputRef = React.createRef();
@@ -93,42 +120,16 @@ class EditProjectPage extends React.Component {
     })
   }
 
-  sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
-
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ submitted: true });
-    
-    const project = this.props.editing_project;
-    if (!this.state.title){
-      this.setState({title: project.title})
-    }
-    if (!this.state.description){
-      this.setState({description: project.description})
-    }
-    if (!this.state.category){
-      this.setState({category: project.category})
-    }
-    if (!this.state.hidden){
-      this.setState({hidden: project.hidden})
-    }
-    if (!this.state.startDate){
-      this.setState({startDate: project.startDate})
-    }
-    if (!this.state.endDate){
-      this.setState({endDate: project.endDate})
-    }
-    if (!this.state.image){
-      this.setState({image: project.image})
-    }
-    if (!this.state.fundingGoal){
-      this.setState({fundingGoal: project.fundingGoal})
-    }
-
+    const { title, description, category, hidden, startDate, endDate, image, goal, id } = this.state;
     const { dispatch } = this.props;
-    dispatch(projectActions.update(this.state.title, this.state.description, this.state.category, this.state.hidden, this.state.startDate, this.state.endDate, this.state.image, this.state.fundingGoal, this.state.id))
+    if (this.handleLocalErrors()) {
+      dispatch(projectActions.update(
+        title, description, category, hidden, startDate, endDate, image, goal, id
+      ))
+    }
   }
 
   handleLocalErrors() {
@@ -230,125 +231,142 @@ class EditProjectPage extends React.Component {
       .map(e => <div className="error" key={e.msg}>{e.msg}</div>)
   }
 
+  showFieldIndepenentErrorMessage() {
+    const { errors } = this.props;
+    // only show the field-independet error message, if the are none related to a specific field
+    return errors && errors.message && (!errors.data || !errors.data.length);
+  }
 
   render() {
-    const { categoryOptions } = this.state;
-    const project = this.props.editing_project;
-
+    const { loading, errors } = this.props;
+    const project = this.selectedProject();
+    const { categoryOptions, title, description, category, startDate, endDate, image, goal } = this.state;
 
     return (
       <div className='view-create-project-page'>
-        <Form>
-          <Form.Input
-            fluid
-            label='Title'
-            placeholder='Title'
-            onChange={this.handleChange}
-            value={ this.state.title || project && project.title || 'Not loaded yet' }
-            name='title'
-          />
-          {this.errorsForField('title')}
-          <Form.Input
-            fluid
-            label='Description'
-            placeholder='Description'
-            onChange={this.handleChange}
-            value={ this.state.description || project && project.description || 'Not loaded yet'}
-            name='description'
-          />
-          {this.errorsForField('description')}
-          <Form.Field >
-            <label>Category</label>
-            <Dropdown
-              options={categoryOptions}
-              search
-              selection
-              fluid
-              allowAdditions
-              name="category"
-              selected={ this.state.category || project && project.category || 'Not loaded yet'}
-              value={ this.state.category || project && project.category || 'Not loaded yet'}
-              onChange={this.handleDropdownChange}
-              onAddItem={this.handleAddition}
-              placeholder='Category' />
-          </Form.Field>
-          {this.errorsForField('category')}
-          <Form.Group widths='equal'>
-            <Form.Field >
-              <label>Start Date</label>
-              {project && <DatePicker
-                name="startDate"
-                selected={new Date(this.state.startDate || project && project.startDate || '')}
-                onChange={this.handleStartDateChange}
-                dateFormat="MM/dd/yyyy"
-              />}
-            </Form.Field>
-            {this.errorsForField('startDate')}
-            <Form.Field >
-              <label>End Date</label>
-              {project && <DatePicker
-                name="endDate"
-                selected={new Date(this.state.endDate || project && project.endDate || '')}
-                onChange={this.handleEndDateChange}
-                dateFormat="MM/dd/yyyy"
-              />}
-            </Form.Field>
-            {this.errorsForField('endDate')}
-          </Form.Group>
-          <Form.Field>
-            <label>Funding Goal</label>
+        {project &&
+          <Form onSubmit={this.handleSubmit}>
             <Form.Input
               fluid
-              labelPosition='right'
-              type='text'
-              placeholder='Funding Goal'
+              label='Title'
+              placeholder='Title'
               onChange={this.handleChange}
-              value={this.state.fundingGoal || project && project.fundingGoal || 0}
-              name='fundingGoal'>
-              <Label basic>€</Label>
-              <input />
-              <Label>.00</Label>
-            </Form.Input>
-          </Form.Field>
-          {this.errorsForField('fundingGoal')}
-          <Form.Group widths='equal'>
-            <Form.Field>
-              <Button
-                content="Choose Picture"
-                labelPosition="left"
-                icon="file"
-                onClick={() => this.fileInputRef.current.click()}
-              />
-              <input
-                ref={this.fileInputRef}
-                type="file"
-                hidden
-                onChange={this.handleFileChange}
-              />
+              value={title}
+              name='title'
+            />
+            {this.errorsForField('title')}
+            <textarea
+              label='Description'
+              placeholder='Description'
+              onChange={this.handleChange}
+              value={description}
+              name='description'
+            />
+            {this.errorsForField('description')}
+            <Form.Field >
+              <label>Category</label>
+              <Dropdown
+                options={categoryOptions}
+                search
+                selection
+                fluid
+                allowAdditions
+                name="category"
+                selected={category}
+                value={category}
+                onChange={this.handleDropdownChange}
+                onAddItem={this.handleAddition}
+                placeholder='Category' />
             </Form.Field>
-            {this.errorsForField('image')}
-            <Image src={this.state.image || project && project.image || ''} />
+            {this.errorsForField('category')}
+            <Form.Group widths='equal'>
+              <Form.Field >
+                <label>Start Date</label>
+                {project && <DatePicker
+                  name="startDate"
+                  selected={new Date(startDate)}
+                  onChange={this.handleStartDateChange}
+                  dateFormat="MM/dd/yyyy"
+                />}
+              </Form.Field>
+              {this.errorsForField('startDate')}
+              <Form.Field >
+                <label>End Date</label>
+                {project && <DatePicker
+                  name="endDate"
+                  selected={new Date(endDate)}
+                  onChange={this.handleEndDateChange}
+                  dateFormat="MM/dd/yyyy"
+                />}
+              </Form.Field>
+              {this.errorsForField('endDate')}
+            </Form.Group>
             <Form.Field>
-              <label>Hide</label>
-              <Checkbox
-                toggle
-                name="hidden"
-                onClick={this.handleToggle}
-                defaultChecked />
+              <label>Funding Goal</label>
+              <Form.Input
+                fluid
+                labelPosition='right'
+                type='text'
+                placeholder='Funding Goal'
+                onChange={this.handleChange}
+                value={goal}
+                name='goal'>
+                <Label basic>€</Label>
+                <input />
+                <Label>.00</Label>
+              </Form.Input>
             </Form.Field>
-          </Form.Group>
-          <Button type="submit" onClick={this.handleSubmit}>Edit Project</Button>
-        </Form>
+            {this.errorsForField('goal')}
+            <Form.Group widths='equal'>
+              <Form.Field>
+                <Button
+                  content="Choose Picture"
+                  labelPosition="left"
+                  icon="file"
+                  onClick={() => this.fileInputRef.current.click()}
+                />
+                <input
+                  ref={this.fileInputRef}
+                  type="file"
+                  hidden
+                  onChange={this.handleFileChange}
+                />
+              </Form.Field>
+              {this.errorsForField('image')}
+              <Image src={image} />
+              <Form.Field>
+                <label>Hide</label>
+                <Checkbox
+                  toggle
+                  name="hidden"
+                  onClick={this.handleToggle}
+                  defaultChecked />
+              </Form.Field>
+            </Form.Group>
+            <div>
+              {!loading &&
+                <input type="submit" className="ui button" name="submit" value="Speichere Änderungen" />
+              }
+              {loading &&
+                <input type="submit" className="ui button" name="submit" value="Speichere Änderungen..." disabled />
+              }
+            </div>
+            {this.showFieldIndepenentErrorMessage() &&
+              <div className="error">{errors.message}</div>
+            }
+          </Form>
+        }
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { errors, editing_project, initialLoadHappened } = state.project;
+  const { errors, projects, initialLoadHappened, loading } = state.project;
   return {
     errors,
-    editing_project,
+    projects,
+    loading,
     initialLoadHappened
   };
 }

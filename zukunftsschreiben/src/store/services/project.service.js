@@ -47,11 +47,11 @@ function create(title, description, category, hidden, startDate, endDate, image,
     .then(handleResponse);
 }
 
-function update(title, description, category, hidden, startDate, endDate, image, fundingGoal, id) {
+function update(title, description, category, hidden, startDate, endDate, image, goal, id) {
   const requestOptions = {
     method: 'PUT',
     headers: authHeader(),
-    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal, id })
+    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, goal, id })
   };
   return fetch(`${API_URL}/project/update`, requestOptions)
     .then(handleResponse);
@@ -86,14 +86,4 @@ function getAll() {
   return fetch(`${API_URL}/project/`, requestOptions)
     .then(handleResponse);
 };
-
-// function updateProject(project_id) {
-//   const requestOptions = {
-//     method: 'PUT',
-//     headers: authHeader(),
-//   };
-
-//   return fetch(`${API_URL}/project/${project_id}`, requestOptions)
-//     .then(handleResponse)
-// }
 

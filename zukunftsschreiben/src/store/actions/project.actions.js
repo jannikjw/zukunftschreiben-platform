@@ -31,11 +31,11 @@ function create(title, description, category, hidden, startDate, endDate, image,
   function failure(error) { return { type: projectConstants.CREATE_REQUEST_FAILED, error } }
 }
 
-function update(title, description, category, hidden, startDate, endDate, image, fundingGoal, id) {
+function update(title, description, category, hidden, startDate, endDate, image, goal, id) {
   return dispatch => {
     dispatch(request({ title }));
 
-    projectService.update(title, description, category, hidden, startDate, endDate, image, fundingGoal, id)
+    projectService.update(title, description, category, hidden, startDate, endDate, image, goal, id)
       .then(
         project => {
           dispatch(success(project));
@@ -54,7 +54,7 @@ function update(title, description, category, hidden, startDate, endDate, image,
 function getProjectAction(id) {
   return dispatch => {
     return new Promise((resolve, reject) => {
-      dispatch( { type: projectConstants.GET_PROJECT_REQUEST_INITIATED, id });
+      dispatch({ type: projectConstants.GET_PROJECT_REQUEST_INITIATED, id });
 
       projectService.getProject(id)
         .then(
@@ -62,10 +62,10 @@ function getProjectAction(id) {
             dispatch({ type: projectConstants.GET_PROJECT_REQUEST_SUCCEEDED, project });
           },
           error => {
-            dispatch({ type: projectConstants.GET_PROJECT_REQUEST_FAILED, error } );
+            dispatch({ type: projectConstants.GET_PROJECT_REQUEST_FAILED, error });
           }
         );
-      
+
       resolve();
     });
   };

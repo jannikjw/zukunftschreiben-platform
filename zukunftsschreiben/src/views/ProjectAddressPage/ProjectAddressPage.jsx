@@ -139,7 +139,7 @@ class ProjectAddressPage extends Component {
             </Grid.Row>
           </Grid.Column>
         </Grid>
-      </div >
+      </div>
     )
   }
 }

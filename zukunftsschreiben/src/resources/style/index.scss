@@ -38,6 +38,13 @@ a {
   color: $error-color;
 }
 
+.button {
+  background-color: $primary-color !important;
+  &:hover {
+    background-color: $strong-color !important;
+  }
+}
+
 .form-group {
   margin-bottom: 20px;
 
