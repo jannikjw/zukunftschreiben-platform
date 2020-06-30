@@ -32,7 +32,7 @@ class ProjectDonationPage extends Component {
     const { projects } = this.props;
     if (!project_id || !projects) { return null };
     const project = projects.find(p => project_id === p._id)
-    return project
+    return project;
   }
 
   handleChange(e) {
@@ -126,7 +126,7 @@ class ProjectDonationPage extends Component {
   }
 
   render() {
-    const project = this.selectProject;
+    const project = this.selectProject();
     const { loading } = this.props;
     const { amount } = this.state;
 
