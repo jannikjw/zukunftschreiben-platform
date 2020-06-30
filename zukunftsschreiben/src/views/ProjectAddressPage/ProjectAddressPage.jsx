@@ -34,11 +34,8 @@ class ProjectAddressPage extends Component {
     e.preventDefault();
 
     this.setState({ submitted: true });
-    const { amount } = this.state;
-    const { dispatch } = this.props;
-    if (this.handleLocalErrors()) {
-      dispatch(donationActions.donateToProject(this.props.project, amount));
-    }
+    const project = this.selectProject();
+    window.location = "/projekte/" + (project && project._id) + "/thanks"
   }
 
   handleRadio(e, { value }) {
@@ -52,7 +49,6 @@ class ProjectAddressPage extends Component {
   selectProject() {
     const { projects } = this.props;
     const { project_id } = this.state;
-    console.log(projects)
     if (!projects || !project_id) { return null }
     return projects.find(p => project_id === p._id)
   }
@@ -60,6 +56,7 @@ class ProjectAddressPage extends Component {
 
   render() {
     const project = this.selectProject();
+    const { loading } = this.props;
 
     return (
       <div className="view-project-detail-page">
@@ -73,7 +70,7 @@ class ProjectAddressPage extends Component {
           </Grid.Column>
           <Grid.Column className='donationColumn'>
             <Grid.Row>
-              <Form size='large'>
+              <Form size='large' onSubmit={this.handleSubmit}>
                 <Form.Group inline>
                   <label>Anrede</label>
                   <Form.Radio
@@ -131,8 +128,14 @@ class ProjectAddressPage extends Component {
                   <Form.Input fluid width={4} label='Vorwahl' placeholder='+49' />
                   <Form.Input fluid width={12} label='Telefonnummer' placeholder='157 123456789' />
                 </Form.Group>
-                <Button type='submit'>Weiter</Button>
-              </Form>
+                <div>
+                  {!loading &&
+                    <input type="submit" className="ui button" name="donate" value="Weiter" />
+                  }
+                  {loading &&
+                    <input type="submit" className="ui button" name="donate" value="Weiter..." disabled />
+                  }
+                </div>              </Form>
             </Grid.Row>
           </Grid.Column>
         </Grid>
@@ -145,7 +148,8 @@ function mapStateToProps(state) {
   const { login, project } = state;
   return {
     user: login.user,
-    projects: project.projects
+    projects: project.projects,
+    loading: project.loading
   };
 }
 

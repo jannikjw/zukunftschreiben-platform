@@ -1,0 +1,39 @@
+// styling specific for the specific component
+@import "../../resources/style/variables.scss";
+
+.view-thank-you-page {
+  .projectTitle {
+    color: $primary-color;
+  }
+
+  .infoColumn {
+    width: 40% !important;
+    border-right: solid $primary-color;
+  }
+  .donationColumn {
+    width: 60% !important;
+  }
+
+  .button {
+    background-color: $primary-color !important;
+    &:hover {
+      background-color: $strong-color !important;
+    }
+  }
+  .center {
+    text-align: center;
+  }
+
+  .icon {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: $primary-color;
+  }
+
+  img {
+    border-bottom: solid $primary-color !important;
+    height: 200px !important;
+    width: 100% !important;
+    object-fit: cover !important;
+  }
+}

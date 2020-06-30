@@ -54,6 +54,21 @@ export function project(state = initialState, action) {
           isAdmin: action.data.data.isAdmin,
         }      
       };
+    case projectConstants.GET_PROJECTS_REQUEST_FAILED:
+      return {
+        ...state, ...{
+          initialLoadHappened: true,
+          loading: false,
+          errors: action.error
+        }
+      };
+    case projectConstants.UPDATE_PROJECT_REQUEST_INITIATED:
+      return {
+        ...state, ...{
+          loading: true,
+          projects: state.projects
+        }
+      };
     case projectConstants.UPDATE_PROJECT_REQUEST_SUCCEEDED:
       return {
         ...state, ...{

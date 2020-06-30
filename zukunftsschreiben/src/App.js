@@ -9,7 +9,6 @@ import { authActions } from './store/actions';
 import { PrivateRoute } from './components/PrivateRoute';
 import { Navbar } from './components/Navbar';
 
-import { HomePage } from './views/HomePage';
 import { RegisterPage } from './views/RegisterPage';
 import { VerifyPage } from './views/VerifyPage';
 import { RequestVerificationCodePage } from './views/RequestVerificationCodePage';
@@ -23,6 +22,7 @@ import { CreateProjectPage } from './views/CreateProjectPage';
 import { EditProjectPage } from './views/EditProjectPage';
 import { ProjectDonationPage } from './views/ProjectDonationPage';
 import { ProjectAddressPage } from './views/ProjectAddressPage';
+import { ThankYouPage } from './views/ThankYouPage';
 
 class App extends React.Component {
   constructor(props) {
@@ -58,6 +58,7 @@ class App extends React.Component {
                 <Route exact path="/projekte" component={ProjectsPage} />
                 <Route exact path="/projekte/:project_id" component={ProjectDonationPage} />
                 <Route exact path="/projekte/:project_id/anschrift" component={ProjectAddressPage} />
+                <Route exact path="/projekte/:project_id/thanks" component={ThankYouPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />
