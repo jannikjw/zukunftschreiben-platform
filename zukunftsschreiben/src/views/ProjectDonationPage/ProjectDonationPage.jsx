@@ -41,6 +41,8 @@ class ProjectDonationPage extends Component {
   }
 
   handleSubmit(e) {
+    //TODO: The donatoin should of course only really happen after the Stripe/Paypal
+    //API have succeeded
     e.preventDefault();
     this.setState({ submitted: true });
     const { amount } = this.state;

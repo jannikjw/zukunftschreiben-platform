@@ -46,6 +46,8 @@ class App extends React.Component {
     return !user || initialLoadHappened;
   }
 
+  //TODO: Styling of ProjectAddressPage and ProjectDonationPage should be unified
+  //by refactoring to a shared style sheet if possible
   render() {
     return (
       <div className="container">
@@ -57,8 +59,8 @@ class App extends React.Component {
                 <Route exact path="/" component={ProjectsPage} />
                 <Route exact path="/projekte" component={ProjectsPage} />
                 <Route exact path="/projekte/:project_id" component={ProjectDonationPage} />
-                <Route exact path="/projekte/:project_id/anschrift" component={ProjectAddressPage} />
-                <Route exact path="/projekte/:project_id/thanks" component={ThankYouPage} />
+                <PrivateRoute exact path="/projekte/:project_id/anschrift" component={ProjectAddressPage} />
+                <PrivateRoute exact path="/projekte/:project_id/thanks" component={ThankYouPage} />
 
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/verify" component={VerifyPage} />
@@ -70,7 +72,6 @@ class App extends React.Component {
                 <PrivateRoute path="/profile" component={ProfilePage} />
                 <PrivateRoute path="/create-project" component={CreateProjectPage} />
                 <PrivateRoute path="/edit-project/:id" component={EditProjectPage} />
-
               </div>
             }
           </Switch>

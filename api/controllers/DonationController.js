@@ -37,10 +37,7 @@ exports.createDonation = [
   body("amount", "Donation Amount is required.")
     .isDecimal()
     .withMessage("The Donation Amount needs to be a decimal value")
-    // .custom(amount => {
-    //   console.log(parseFloat(amount))
-    //   if (parseFloat(amount) < 5.00) { throw new Error() }
-    // })
+    //TODO: Write custom validator for 5 EUR criteria
     .withMessage('The Donation Amount needs to be at least 5€')
     .trim(),
   rejectRequestsWithValidationErrors,

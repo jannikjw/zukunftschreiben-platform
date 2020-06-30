@@ -13,16 +13,16 @@ class ProjectsPage extends Component {
   }
 
   renderProjects() {
-    const { projects, isAdmin, user } = this.props;
+    const { projects } = this.props;
     if (!projects) return '';
     if (!projects.length > 0) return '';
     return projects
       .map((project) => <Grid.Column key={project._id}>
-                          <Project
-                            key={project._id}
-                            project={project}
-                          />
-                        </Grid.Column>
+        <Project
+          key={project._id}
+          project={project}
+        />
+      </Grid.Column>
       )
   }
 

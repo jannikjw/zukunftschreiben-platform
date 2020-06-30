@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {  Form, 
-          Checkbox, 
-          Button, 
-          Dropdown,
-          Label,
-          Image,
-         } from 'semantic-ui-react'
+import {
+  Form,
+  Checkbox,
+  Button,
+  Dropdown,
+  Label,
+  Image,
+} from 'semantic-ui-react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -21,18 +22,6 @@ function getBase64(img, callback) {
   reader.readAsDataURL(img);
 }
 
-function beforeUpload(file) {
-  const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-  if (!isJpgOrPng) {
-      console.error('You can only upload JPG/PNG file!');
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-      console.error('Image must smaller than 2MB!');
-  }
-  return isJpgOrPng && isLt2M;
-}
-
 class CreateProjectPage extends React.Component {
   constructor(props) {
     super(props);
@@ -41,7 +30,7 @@ class CreateProjectPage extends React.Component {
     this.handleStartDateChange = this.handleStartDateChange.bind(this);
     this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleToggle =this.handleToggle.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
     this.handleFileChange = this.handleFileChange.bind(this);
     this.handleAddition = this.handleAddition.bind(this);
 
@@ -57,9 +46,9 @@ class CreateProjectPage extends React.Component {
       submitted: false,
       image: null,
       categoryOptions: [
-        { key: 'School', text: 'School', value: 'School'},
-        { key: 'Reading', text: 'Reading', value: 'Reading'},
-        { key: 'Writing', text: 'Writing', value: 'Writing'},
+        { key: 'School', text: 'School', value: 'School' },
+        { key: 'Reading', text: 'Reading', value: 'Reading' },
+        { key: 'Writing', text: 'Writing', value: 'Writing' },
       ]
     };
   }
@@ -71,7 +60,7 @@ class CreateProjectPage extends React.Component {
     this.setState({ [name]: value });
   }
 
-  handleDropdownChange = (e, { value }) => this.setState({category: value })
+  handleDropdownChange = (e, { value }) => this.setState({ category: value })
 
   handleAddition = (e, { value }) => {
     this.setState((prevState) => ({
@@ -86,21 +75,21 @@ class CreateProjectPage extends React.Component {
   handleFileChange = event => {
     getBase64(event.target.files[0], imageUrl => {
       this.setState({
-          image: imageUrl
-        })
+        image: imageUrl
+      })
     });
   }
 
-  handleStartDateChange(date){
+  handleStartDateChange(date) {
     this.setState({
       startDate: date
     })
   }
 
-  handleEndDateChange(date){
-      this.setState({
-        endDate: date
-      })
+  handleEndDateChange(date) {
+    this.setState({
+      endDate: date
+    })
   }
 
   sleep(ms) {
@@ -115,13 +104,13 @@ class CreateProjectPage extends React.Component {
     if (this.handleLocalErrors()) {
       dispatch(projectActions.create(title, description, category, hidden, startDate, endDate, image, fundingGoal))
     }
-    this.sleep(1000).then(()=> {
+    this.sleep(1000).then(() => {
       window.location = "/"
     })
   }
 
   handleLocalErrors() {
-    const { title, description, category, startDate, endDate, image, fundingGoal } = this.state;
+    const { title, description, category, startDate, endDate, image } = this.state;
     const { dispatch } = this.props;
 
     let validationErrors = [];
@@ -221,48 +210,48 @@ class CreateProjectPage extends React.Component {
 
 
   render() {
-    const { title, description, category, startDate, endDate, fundingGoal, categoryOptions} = this.state;
+    const { title, description, category, startDate, endDate, fundingGoal, categoryOptions } = this.state;
 
     return (
       <div className='view-create-project-page'>
         <Form>
-          <Form.Input 
-            fluid 
-            label='Title' 
-            placeholder='Title' 
-            onChange={this.handleChange} 
+          <Form.Input
+            fluid
+            label='Title'
+            placeholder='Title'
+            onChange={this.handleChange}
             value={title}
             name='title'
-            />
+          />
           {this.errorsForField('title')}
-          <Form.Input 
-            fluid 
-            label='Description' 
-            placeholder='Description' 
+          <Form.Input
+            fluid
+            label='Description'
+            placeholder='Description'
             onChange={this.handleChange}
             value={description}
             name='description'
-            />
+          />
           {this.errorsForField('description')}
           <Form.Field >
             <label>Category</label>
-            <Dropdown 
-            options={categoryOptions}
-            search
-            selection
-            fluid
-            allowAdditions
-            name="category" 
-            value={category}
-            onChange={this.handleDropdownChange}
-            onAddItem={this.handleAddition}
-            placeholder='Category' />
+            <Dropdown
+              options={categoryOptions}
+              search
+              selection
+              fluid
+              allowAdditions
+              name="category"
+              value={category}
+              onChange={this.handleDropdownChange}
+              onAddItem={this.handleAddition}
+              placeholder='Category' />
           </Form.Field>
           {this.errorsForField('category')}
           <Form.Group widths='equal'>
             <Form.Field >
               <label>Start Date</label>
-              <DatePicker 
+              <DatePicker
                 name="startDate"
                 selected={startDate}
                 onChange={this.handleStartDateChange}
@@ -272,7 +261,7 @@ class CreateProjectPage extends React.Component {
             {this.errorsForField('startDate')}
             <Form.Field >
               <label>End Date</label>
-              <DatePicker  
+              <DatePicker
                 name="endDate"
                 selected={endDate}
                 onChange={this.handleEndDateChange}
@@ -282,19 +271,19 @@ class CreateProjectPage extends React.Component {
             {this.errorsForField('endDate')}
           </Form.Group>
           <Form.Field>
-              <label>Funding Goal</label>
-              <Form.Input 
-                fluid 
-                labelPosition='right' 
-                type='text' 
-                placeholder='Funding Goal'
-                onChange={this.handleChange}
-                value={fundingGoal}
-                name='fundingGoal'>
-                  <Label basic>€</Label>
-                  <input />
-                  <Label>.00</Label>
-              </Form.Input>
+            <label>Funding Goal</label>
+            <Form.Input
+              fluid
+              labelPosition='right'
+              type='text'
+              placeholder='Funding Goal'
+              onChange={this.handleChange}
+              value={fundingGoal}
+              name='fundingGoal'>
+              <Label basic>€</Label>
+              <input />
+              <Label>.00</Label>
+            </Form.Input>
           </Form.Field>
           {this.errorsForField('fundingGoal')}
           <Form.Group widths='equal'>
@@ -316,11 +305,11 @@ class CreateProjectPage extends React.Component {
             <Image src={this.state.image} />
             <Form.Field>
               <label>Hide</label>
-              <Checkbox 
-              toggle 
-              name="hidden"
-              onClick={this.handleToggle}
-              defaultChecked/>
+              <Checkbox
+                toggle
+                name="hidden"
+                onClick={this.handleToggle}
+                defaultChecked />
             </Form.Field>
           </Form.Group>
           <Button type="submit" onClick={this.handleSubmit}>Create Project</Button>

@@ -52,7 +52,7 @@ export function project(state = initialState, action) {
           errors: {},
           projects: action.data.data.projectData,
           isAdmin: action.data.data.isAdmin,
-        }      
+        }
       };
     case projectConstants.GET_PROJECTS_REQUEST_FAILED:
       return {
@@ -85,19 +85,28 @@ export function project(state = initialState, action) {
           errors: action.error,
         }
       };
-      case projectConstants.GET_PROJECT_REQUEST_INITIATED:
-        return {
-          ...state, ...{
-            loading: true,
-          }
-        };
-      case projectConstants.GET_PROJECT_REQUEST_SUCCEEDED:
-        return {
-          ...state, ...{
-            editing_project: action.project.data,
-            loading: false,
-          }      
-        };
+    case projectConstants.GET_PROJECT_REQUEST_INITIATED:
+      return {
+        ...state, ...{
+          loading: true,
+        }
+      };
+    case projectConstants.GET_PROJECT_REQUEST_SUCCEEDED:
+      return {
+        ...state, ...{
+          initialLoadHappened: true,
+          editing_project: action.project.data,
+          loading: false,
+        }
+      };
+    case projectConstants.GET_PROJECT_REQUEST_FAILED:
+      return {
+        ...state, ...{
+          initialLoadHappened: true,
+          loading: false,
+          errors: action.error
+        }
+      };
     default:
       return state
   };

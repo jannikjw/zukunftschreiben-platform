@@ -42,7 +42,7 @@ function create(title, description, category, hidden, startDate, endDate, image,
     method: 'POST',
     headers: authHeader(),
     body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal })
-  };  
+  };
   return fetch(`${API_URL}/project/create`, requestOptions)
     .then(handleResponse);
 }
@@ -51,8 +51,8 @@ function update(title, description, category, hidden, startDate, endDate, image,
   const requestOptions = {
     method: 'PUT',
     headers: authHeader(),
-    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal, id})
-  };  
+    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal, id })
+  };
   return fetch(`${API_URL}/project/update`, requestOptions)
     .then(handleResponse);
 }
@@ -62,7 +62,7 @@ function deleteProject(id) {
     method: 'DELETE',
     headers: authHeader(),
     body: JSON.stringify({ id })
-  };  
+  };
   return fetch(`${API_URL}/project/delete`, requestOptions)
     .then(handleResponse);
 }
@@ -73,7 +73,7 @@ function getProject(id) {
     headers: authHeader(),
   };
 
-  return fetch(`${API_URL}/project/getProject/`+id, requestOptions)
+  return fetch(`${API_URL}/project/getProject/` + id, requestOptions)
     .then(handleResponse);
 }
 
@@ -85,15 +85,15 @@ function getAll() {
   };
   return fetch(`${API_URL}/project/`, requestOptions)
     .then(handleResponse);
-}
+};
 
-function updateProject(project_id) {
-  const requestOptions = {
-    method: 'PUT',
-    headers: authHeader(),
-  };
+// function updateProject(project_id) {
+//   const requestOptions = {
+//     method: 'PUT',
+//     headers: authHeader(),
+//   };
 
-  return fetch(`${API_URL}/project/${project_id}`, requestOptions)
-    .then(handleResponse)
-}
+//   return fetch(`${API_URL}/project/${project_id}`, requestOptions)
+//     .then(handleResponse)
+// }
 

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { donationActions } from '../../store/actions/donation.actions';
 import { projectActions } from '../../store/actions/project.actions';
 import { PaymentProgress } from '../../components/PaymentProgress';
-import { Grid, Form, Button, Select } from 'semantic-ui-react'
+import { Grid, Form, Select } from 'semantic-ui-react'
 import './ProjectAddressPage.scss';
 
 
@@ -57,7 +56,9 @@ class ProjectAddressPage extends Component {
   render() {
     const project = this.selectProject();
     const { loading } = this.props;
-
+    //TODO: All input fields should have error checks and backend functionality to save the users
+    //extra but optional data when logged in
+    //Also a possibility to sign up here instead of before the donation process would make sense
     return (
       <div className="view-project-detail-page">
         <Grid stackable>
@@ -118,10 +119,6 @@ class ProjectAddressPage extends Component {
                 <Form.Group>
                   <Form.Input fluid width={4} label='Postleitzahl' placeholder='PLZ' />
                   <Form.Input fluid width={12} label='Stadt' placeholder='Stadt' />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Input fluid width={4} label='Postleitzahl' placeholder='PLZ' />
-                  <Form.Input fluid width={12} label='Stadt' placeholder='Stadt' />
                   <Select placeholder='Land' options={countryOptions} />
                 </Form.Group>
                 <Form.Group>
@@ -129,13 +126,16 @@ class ProjectAddressPage extends Component {
                   <Form.Input fluid width={12} label='Telefonnummer' placeholder='157 123456789' />
                 </Form.Group>
                 <div>
+                  {/* This should continue to a payment selection site where the Paypal PLUS 
+                and Stripe API are used to host different payment providers */}
                   {!loading &&
                     <input type="submit" className="ui button" name="donate" value="Weiter" />
                   }
                   {loading &&
                     <input type="submit" className="ui button" name="donate" value="Weiter..." disabled />
                   }
-                </div>              </Form>
+                </div>
+              </Form>
             </Grid.Row>
           </Grid.Column>
         </Grid>
