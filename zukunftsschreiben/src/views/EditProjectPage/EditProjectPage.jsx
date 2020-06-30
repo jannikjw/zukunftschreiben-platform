@@ -39,16 +39,7 @@ class EditProjectPage extends React.Component {
 
     this.state = {
       id: this.props.match.params.id,
-      title: "",
-      description: "",
-      category: "",
-      hidden: true,
-      startDate: new Date(),
-      endDate: new Date(),
-      fundingGoal: 1000,
-      likes: 0,
       submitted: false,
-      image: null,
       categoryOptions: [
         { key: 'School', text: 'School', value: 'School' },
         { key: 'Reading', text: 'Reading', value: 'Reading' },
@@ -61,26 +52,6 @@ class EditProjectPage extends React.Component {
     const { dispatch } = this.props;
     const { id, waiting } = this.state
     dispatch(projectActions.getProjectAction(id))
-    this.sleep(4000)
-      .then(()=>{
-        if (this.props.editing_project){
-          this.setState({
-            title: this.props.editing_project.title,
-            description: this.props.editing_project.description,
-            category: this.props.editing_project.category,
-            hidden: this.props.editing_project.hidden,
-            startDate: this.props.editing_project.startDate,
-            endDate: this.props.editing_project.endDate,
-            fundingGoal: this.props.editing_project.fundingGoal,
-            likes: this.props.editing_project.likes,
-            submitted: false,
-            image: this.props.editing_project.image,
-          })
-          this.setState((prevState) => ({
-            categoryOptions: [{ text: this.props.editing_project.category, value: this.props.editing_project.category }, ...prevState.categoryOptions],
-          }))
-        }
-      })
   }
 
   fileInputRef = React.createRef();
@@ -129,14 +100,35 @@ class EditProjectPage extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     this.setState({ submitted: true });
-    const { title, description, category, hidden, startDate, endDate, image, fundingGoal, id } = this.state;
-    const { dispatch } = this.props;
-    if (this.handleLocalErrors()) {
-      dispatch(projectActions.update(title, description, category, hidden, startDate, endDate, image, fundingGoal, id))
+    
+    const project = this.props.editing_project;
+    if (!this.state.title){
+      this.setState({title: project.title})
     }
-    this.sleep(1000).then(() => {
-      window.location = "/"
-    })
+    if (!this.state.description){
+      this.setState({description: project.description})
+    }
+    if (!this.state.category){
+      this.setState({category: project.category})
+    }
+    if (!this.state.hidden){
+      this.setState({hidden: project.hidden})
+    }
+    if (!this.state.startDate){
+      this.setState({startDate: project.startDate})
+    }
+    if (!this.state.endDate){
+      this.setState({endDate: project.endDate})
+    }
+    if (!this.state.image){
+      this.setState({image: project.image})
+    }
+    if (!this.state.fundingGoal){
+      this.setState({fundingGoal: project.fundingGoal})
+    }
+
+    const { dispatch } = this.props;
+    dispatch(projectActions.update(this.state.title, this.state.description, this.state.category, this.state.hidden, this.state.startDate, this.state.endDate, this.state.image, this.state.fundingGoal, this.state.id))
   }
 
   handleLocalErrors() {
@@ -252,7 +244,7 @@ class EditProjectPage extends React.Component {
             label='Title'
             placeholder='Title'
             onChange={this.handleChange}
-            value={this.state.title || 'Not loaded yet'}
+            value={ this.state.title || project && project.title || 'Not loaded yet' }
             name='title'
           />
           {this.errorsForField('title')}
@@ -261,7 +253,7 @@ class EditProjectPage extends React.Component {
             label='Description'
             placeholder='Description'
             onChange={this.handleChange}
-            value={this.state.description || 'Not loaded yet'}
+            value={ this.state.description || project && project.description || 'Not loaded yet'}
             name='description'
           />
           {this.errorsForField('description')}
@@ -274,8 +266,8 @@ class EditProjectPage extends React.Component {
               fluid
               allowAdditions
               name="category"
-              selected={this.state.category || 'Not loaded yet'}
-              value={this.state.category || 'Not loaded yet'}
+              selected={ this.state.category || project && project.category || 'Not loaded yet'}
+              value={ this.state.category || project && project.category || 'Not loaded yet'}
               onChange={this.handleDropdownChange}
               onAddItem={this.handleAddition}
               placeholder='Category' />
@@ -286,7 +278,7 @@ class EditProjectPage extends React.Component {
               <label>Start Date</label>
               {project && <DatePicker
                 name="startDate"
-                selected={new Date(this.state.startDate)}
+                selected={new Date(this.state.startDate || project && project.startDate || '')}
                 onChange={this.handleStartDateChange}
                 dateFormat="MM/dd/yyyy"
               />}
@@ -296,7 +288,7 @@ class EditProjectPage extends React.Component {
               <label>End Date</label>
               {project && <DatePicker
                 name="endDate"
-                selected={new Date(this.state.endDate)}
+                selected={new Date(this.state.endDate || project && project.endDate || '')}
                 onChange={this.handleEndDateChange}
                 dateFormat="MM/dd/yyyy"
               />}
@@ -311,7 +303,7 @@ class EditProjectPage extends React.Component {
               type='text'
               placeholder='Funding Goal'
               onChange={this.handleChange}
-              value={this.state.fundingGoal || 0}
+              value={this.state.fundingGoal || project && project.fundingGoal || 0}
               name='fundingGoal'>
               <Label basic>€</Label>
               <input />
@@ -335,7 +327,7 @@ class EditProjectPage extends React.Component {
               />
             </Form.Field>
             {this.errorsForField('image')}
-            <Image src={this.state.image} />
+            <Image src={this.state.image || project && project.image || ''} />
             <Form.Field>
               <label>Hide</label>
               <Checkbox
