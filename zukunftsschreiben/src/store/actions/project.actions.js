@@ -46,6 +46,7 @@ function update(title, description, category, hidden, startDate, endDate, image,
       );
   };
 
+
   function request(title) { return { type: projectConstants.UPDATE_REQUEST_INITIATED, title } }
   function success(project) { return { type: projectConstants.UPDATE_REQUEST_SUCCEEDED, project } }
   function failure(error) { return { type: projectConstants.UPDATE_REQUEST_FAILED, error } }
