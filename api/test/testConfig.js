@@ -1,6 +1,6 @@
 //During the automated test the env variable, We will set it to 'test'
 process.env.NODE_ENV = 'test';
-process.env.MONGODB_URL = 'mongodb://127.0.0.1:27017/centerling-news-test';
+process.env.MONGODB_URI = 'mongodb://127.0.0.1:27017/centerling-news-test';
 
 //Require the dev-dependencies
 let chai = require('chai');
@@ -12,8 +12,8 @@ chai.use(chaiHttp);
 
 //Export this to use in multiple files
 module.exports = {
-	chai: chai,
-	server: server,
-	should: should,
-	expect: expect
+  chai: chai,
+  server: server,
+  should: should,
+  expect: expect
 };
