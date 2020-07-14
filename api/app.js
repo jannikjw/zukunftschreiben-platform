@@ -3,6 +3,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
+const bodyParser = require('body-parser');
 
 // load environment variables from .env file
 require("dotenv").config();
@@ -41,8 +42,9 @@ if (process.env.NODE_ENV !== "test") {
 	app.use(logger("dev"));
 }
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(express.urlencoded({limit: "10mb", extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 

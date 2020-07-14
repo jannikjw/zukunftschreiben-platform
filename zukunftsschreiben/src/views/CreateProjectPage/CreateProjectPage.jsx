@@ -1,55 +1,116 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import qs from "qs";
+import {
+  Form,
+  Checkbox,
+  Button,
+  Dropdown,
+  Label,
+  Image,
+} from 'semantic-ui-react'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { projectActions } from '../../store/actions';
 import { projectConstants } from '../../store/constants';
 
 import './CreateProjectPage.scss';
 
+function getBase64(img, callback) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+}
+
 class CreateProjectPage extends React.Component {
   constructor(props) {
     super(props);
-
-    const query = qs.parse(this.props.location.search, {
-      ignoreQueryPrefix: true,
-    });
-
     this.handleChange = this.handleChange.bind(this);
+    this.handleDropdownChange = this.handleDropdownChange.bind(this);
+    this.handleStartDateChange = this.handleStartDateChange.bind(this);
+    this.handleEndDateChange = this.handleEndDateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleToggle = this.handleToggle.bind(this);
+    this.handleFileChange = this.handleFileChange.bind(this);
+    this.handleAddition = this.handleAddition.bind(this);
 
     this.state = {
-      title: query.title || "",
-      description: query.description || "",
-      category: query.category || "",
-      status: query.status || "hidden",
-      startDate: query.startDate || new Date(),
-      endDate: query.endDate || new Date(),
+      title: "",
+      description: "",
+      category: "",
+      hidden: true,
+      startDate: new Date(),
+      endDate: new Date(),
+      fundingGoal: 1000,
       likes: 0,
       submitted: false,
-      statusList: ['hidden', 'visible'],
+      image: null,
+      categoryOptions: [
+        { key: 'School', text: 'School', value: 'School' },
+        { key: 'Reading', text: 'Reading', value: 'Reading' },
+        { key: 'Writing', text: 'Writing', value: 'Writing' },
+      ]
     };
   }
+
+  fileInputRef = React.createRef();
 
   handleChange(e) {
     const { name, value } = e.target;
     this.setState({ [name]: value });
   }
 
+  handleDropdownChange = (e, { value }) => this.setState({ category: value })
+
+  handleAddition = (e, { value }) => {
+    this.setState((prevState) => ({
+      categoryOptions: [{ text: value, value }, ...prevState.categoryOptions],
+    }))
+  }
+
+  handleToggle(e) {
+    this.setState((prevState) => ({ hidden: !prevState.hidden }))
+  }
+
+  handleFileChange = event => {
+    getBase64(event.target.files[0], imageUrl => {
+      this.setState({
+        image: imageUrl
+      })
+    });
+  }
+
+  handleStartDateChange(date) {
+    this.setState({
+      startDate: date
+    })
+  }
+
+  handleEndDateChange(date) {
+    this.setState({
+      endDate: date
+    })
+  }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
   handleSubmit(e) {
     e.preventDefault();
-
     this.setState({ submitted: true });
-    const { title, description, category, status, startDate, endDate } = this.state;
+    const { title, description, category, hidden, startDate, endDate, image, fundingGoal } = this.state;
     const { dispatch } = this.props;
     if (this.handleLocalErrors()) {
-      dispatch(projectActions.create(title, description, category, status, startDate, endDate))
+      dispatch(projectActions.create(title, description, category, hidden, startDate, endDate, image, fundingGoal))
     }
+    this.sleep(1000).then(() => {
+      window.location = "/"
+    })
   }
 
   handleLocalErrors() {
-    const { title, description, category, status, startDate, endDate } = this.state;
+    const { title, description, category, startDate, endDate, image } = this.state;
     const { dispatch } = this.props;
 
     let validationErrors = [];
@@ -81,11 +142,11 @@ class CreateProjectPage extends React.Component {
       })
     }
 
-    if (!status) {
+    if (!image) {
       validationErrors.push({
-        value: status,
-        msg: 'A Status is required. Default is hidden!',
-        param: 'status',
+        value: image,
+        msg: 'An image is required',
+        param: 'image',
         location: 'local'
       })
     }
@@ -147,95 +208,112 @@ class CreateProjectPage extends React.Component {
       .map(e => <div className="error" key={e.msg}>{e.msg}</div>)
   }
 
-  fieldHasError(name) {
-    return this.errorsForField(name).length > 0
-  }
-
-  showLocalErrorMessages() {
-    const { errors } = this.props;
-    // error messages from the clients should only be shown, if there are now errors from the server yet
-    return !errors || !errors.data || !errors.data.length;
-  }
-
-  showFieldIndependentErrorMessage() {
-    const { errors } = this.props;
-    // only show the field-independent error message, if the are none related to a specific field
-    return errors && errors.message && (!errors.data || !errors.data.length);
-  }
 
   render() {
-    const { creating: creating, errors } = this.props;
-    const { title, description, category, status, startDate, endDate, submitted } = this.state;
+    const { title, description, category, startDate, endDate, fundingGoal, categoryOptions } = this.state;
 
     return (
-      <div className="view-create-project-page">
-        <h2>Create</h2>
-        <div className="tagline">Create a new project.</div>
-        <form name="form" onSubmit={this.handleSubmit}>
-          <div className={'form-group' + (submitted && !title ? ' has-error' : '')}>
-            <label htmlFor="title">Title</label>
-            <input type="text" className="form-control" name="title" value={title} onChange={this.handleChange} />
-            {
-              this.errorsForField('title')
-            }
-          </div>
-          <div className={'form-group' + (submitted && !description ? ' has-error' : '')}>
-            <label htmlFor="description">Description</label>
-            <input type="text" className="form-control" name="description" value={description} onChange={this.handleChange} />
-            {
-              this.errorsForField('description')
-            }
-          </div>
-          <div className={'form-group' + (submitted && !category ? ' has-error' : '')}>
-            <label htmlFor="category">Category</label>
-            <input type="text" className="form-control" name="category" value={category} onChange={this.handleChange} />
-            {
-              this.errorsForField('category')
-            }
-          </div>
-          <div className={'form-group' + (submitted && !status ? ' has-error' : '')}>
-            <label htmlFor="status">Status</label>
-            <input type="text" className="form-control" name="status" value={status} onChange={this.handleChange} />
-            {
-              this.errorsForField('status')
-            }
-          </div>
-          <div className={'form-group' + (submitted && !startDate ? ' has-error' : '')}>
-            <label htmlFor="startDate">Start Date</label>
-            <input type="date" className="form-control" name="startDate" value={startDate} onChange={this.handleChange} />
-            {
-              this.errorsForField('startDate')
-            }
-          </div>
-          <div className={'form-group' + (submitted && this.fieldHasError('endDate') ? ' has-error' : '')}>
-            <label htmlFor="endDate">End Date</label>
-            <input type="date" className="form-control" name="endDate" value={endDate} onChange={this.handleChange} />
-            {
-              this.errorsForField('endDate')
-            }
-          </div>
-          <div className="form-group">
-            {!creating &&
-              <input type="submit" className="form-control" name="login" value="Create Project" />
-            }
-            {creating &&
-              <input type="submit" className="form-control" name="login" value="Creating Project ..." disabled />
-            }
-          </div>
-        </form>
-        <div className="error-container">
-          {this.showFieldIndependentErrorMessage() &&
-            <div className="error">{errors.message}</div>
-          }
-        </div>
-        <div className="link-group">
-          <p>
-            <Link to="/login">Already have an account?</Link>
-          </p>
-          <p>
-            <Link to="/forgot-password">Forgot your password?</Link>
-          </p>
-        </div>
+      <div className='view-create-project-page'>
+        <Form>
+          <Form.Input
+            fluid
+            label='Title'
+            placeholder='Title'
+            onChange={this.handleChange}
+            value={title}
+            name='title'
+          />
+          {this.errorsForField('title')}
+          <Form.Input
+            fluid
+            label='Description'
+            placeholder='Description'
+            onChange={this.handleChange}
+            value={description}
+            name='description'
+          />
+          {this.errorsForField('description')}
+          <Form.Field >
+            <label>Category</label>
+            <Dropdown
+              options={categoryOptions}
+              search
+              selection
+              fluid
+              allowAdditions
+              name="category"
+              value={category}
+              onChange={this.handleDropdownChange}
+              onAddItem={this.handleAddition}
+              placeholder='Category' />
+          </Form.Field>
+          {this.errorsForField('category')}
+          <Form.Group widths='equal'>
+            <Form.Field >
+              <label>Start Date</label>
+              <DatePicker
+                name="startDate"
+                selected={startDate}
+                onChange={this.handleStartDateChange}
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Field>
+            {this.errorsForField('startDate')}
+            <Form.Field >
+              <label>End Date</label>
+              <DatePicker
+                name="endDate"
+                selected={endDate}
+                onChange={this.handleEndDateChange}
+                dateFormat="MM/dd/yyyy"
+              />
+            </Form.Field>
+            {this.errorsForField('endDate')}
+          </Form.Group>
+          <Form.Field>
+            <label>Funding Goal</label>
+            <Form.Input
+              fluid
+              labelPosition='right'
+              type='text'
+              placeholder='Funding Goal'
+              onChange={this.handleChange}
+              value={fundingGoal}
+              name='fundingGoal'>
+              <Label basic>€</Label>
+              <input />
+              <Label>.00</Label>
+            </Form.Input>
+          </Form.Field>
+          {this.errorsForField('fundingGoal')}
+          <Form.Group widths='equal'>
+            <Form.Field>
+              <Button
+                content="Choose Picture"
+                labelPosition="left"
+                icon="file"
+                onClick={() => this.fileInputRef.current.click()}
+              />
+              <input
+                ref={this.fileInputRef}
+                type="file"
+                hidden
+                onChange={this.handleFileChange}
+              />
+            </Form.Field>
+            {this.errorsForField('image')}
+            <Image src={this.state.image} />
+            <Form.Field>
+              <label>Hide</label>
+              <Checkbox
+                toggle
+                name="hidden"
+                onClick={this.handleToggle}
+                defaultChecked />
+            </Form.Field>
+          </Form.Group>
+          <Button type="submit" onClick={this.handleSubmit}>Create Project</Button>
+        </Form>
       </div>
     );
   }

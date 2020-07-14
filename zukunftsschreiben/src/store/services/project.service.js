@@ -4,6 +4,10 @@ const API_URL = process.env.REACT_APP_API_HOST + '/api'
 
 export const projectService = {
   create,
+  update,
+  getAll,
+  getProject,
+  deleteProject
 };
 
 // -----------------
@@ -25,8 +29,6 @@ function handleResponse(response) {
 
       const error = data
       return Promise.reject(error);
-    } else {
-      window.location = '/'
     }
     return data;
   });
@@ -35,14 +37,53 @@ function handleResponse(response) {
 // -----------------
 // service functions
 // -----------------
-function create(title, description, category, status, startDate, endDate) {
+function create(title, description, category, hidden, startDate, endDate, image, fundingGoal) {
   const requestOptions = {
     method: 'POST',
     headers: authHeader(),
-    body: JSON.stringify({ title, description, category, status, startDate, endDate })
+    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, fundingGoal })
   };
-
-  return fetch(`${API_URL}/project/`, requestOptions)
+  return fetch(`${API_URL}/project/create`, requestOptions)
     .then(handleResponse);
 }
+
+function update(title, description, category, hidden, startDate, endDate, image, goal, id) {
+  const requestOptions = {
+    method: 'PUT',
+    headers: authHeader(),
+    body: JSON.stringify({ title, description, category, hidden, startDate, endDate, image, goal, id })
+  };
+  return fetch(`${API_URL}/project/update`, requestOptions)
+    .then(handleResponse);
+}
+
+function deleteProject(id) {
+  const requestOptions = {
+    method: 'DELETE',
+    headers: authHeader(),
+    body: JSON.stringify({ id })
+  };
+  return fetch(`${API_URL}/project/delete`, requestOptions)
+    .then(handleResponse);
+}
+
+function getProject(id) {
+  const requestOptions = {
+    method: 'GET',
+    headers: authHeader(),
+  };
+
+  return fetch(`${API_URL}/project/getProject/` + id, requestOptions)
+    .then(handleResponse);
+}
+
+function getAll() {
+  //gets Array of all projects
+  const requestOptions = {
+    method: 'GET',
+    headers: authHeader()
+  };
+  return fetch(`${API_URL}/project/`, requestOptions)
+    .then(handleResponse);
+};
 
