@@ -1,6 +1,4 @@
-# Final Assignment
-
-## Project View Page for Zukunftsschreiben
+# Project View Page for Zukunftsschreiben
 
 The aim of this project is to develop a web app for Zukunftsschreiben (ZS) on 
 which ongoing projects can be displayed, so that people willing to support 
